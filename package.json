@@ -1,0 +1,22 @@
+{
+  "name": "social-circle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeekSwan/Social-Circle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeekSwan/Social-Circle/issues"
+  },
+  "homepage": "https://github.com/LeekSwan/Social-Circle#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
