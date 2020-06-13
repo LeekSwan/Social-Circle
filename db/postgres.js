@@ -19,3 +19,4 @@ function query(text) {
 
 module.exports = {query}
 
+    
