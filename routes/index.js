@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var db = require('../db/postgres.js')
+var db = require('../db/index.js')
 
 // // define the home page route
 // router.get('/', function (req, res) {
@@ -13,13 +13,11 @@ var db = require('../db/postgres.js')
 // })
 
 router.get('/test', function(req,res) {
-  
-  db.query(
-      'Select * from users'
-  ) .then(results => {
-    res.send(results.rows[0]);
-  })
-
+    const query = 'Select * from users';
+    db.query(query)
+    .then(results => {
+        res.send(results.rows);
+    })
 })
 
 module.exports = router
