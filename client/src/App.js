@@ -12,10 +12,10 @@ import axios from 'axios';
 //         <img src={logo} className="App-logo" alt="logo" />
 //         <p>
 //           Edit <code>src/App.js</code> and save to reldaaasdasf.
-          
 
-//         </p> 
-//         <a 
+
+//         </p>
+//         <a
 //           className="App-link"
 //           href="https://reactjs.org"
 //           target="_blank"
@@ -28,34 +28,46 @@ import axios from 'axios';
 //   );
 // }
 
+class getPostgres extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = { persons: ['placeholder name']}
 
-class getPostgres extends React.Component{
-  state = {
-    persons: []
-  }
+        this.handleClick = this.handleClick.bind(this);
+    }
 
-  componentDidMount() {
-    axios.get(`/test`)
-      .then(res => {
-        const persons = res.data;
-        this.setState({ persons });
-      })
-  }
+    handleClick() {
+        axios.get(`/test`)
+            .then(res => {
+                console.log('componentDidMount: axios.get(/test).then');
+                console.log(res.data);
+                const persons = res.data;
+                this.setState({
+                    persons: persons.map(person => person.firstname)
+                });
+        })
+    }
 
-  render() {
-    return (
-      <ul>
-        {this.state.persons.map(person => 
-        <li>{person}</li>
-        )}
-        test
-      </ul>
-    )
-  }
-  
-  
+    // componentDidMount() {
+    //     console.log('componentDidMount: start');
+    //     console.log('componentDidMount: end');
+    // }
 
+    render() {
+        return (
+            <React.Fragment>
+                <button onClick={this.handleClick}>
+                    Click me
+                </button>
+                <ul>
+                    { this.state.persons.map(person =>
+                        <li>{person}</li>
+                    ) }
+                    test
+                </ul>
+            </React.Fragment>
+        );
+    }
 }
 export default getPostgres;
-
