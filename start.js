@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV == 'dev') {
+    console.log('Dev environment detected! :)')
+    require('dotenv').config()
+}
+
 const express = require('express')
 const path = require('path');
 
