@@ -39,15 +39,19 @@ class Home extends React.Component {
   handleClick() {
     console.log('Button has been pressed')
     
-    axios.post(`/POST/api/users`, this.state)
+    axios.post(`/api/users`, this.state)
       .then(req  => {
         if (req.data.status === 'success'){
           console.log("Data sent"); 
-          this.resetForm()
+          // this.resetForm()
         }else if(req.data.status === 'fail'){
           console.log("it failed m8");
-        }
+        } 
       })
+  }
+
+  // Will need a way to clear from after submission
+  resetForm() { 
   }
 
 
