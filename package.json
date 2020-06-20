@@ -4,7 +4,9 @@
   "description": "",
   "main": "start.js",
   "scripts": {
-    "start": "NODE_ENV=dev node start.js",
+    "start": "npm run start:dev",
+    "start:dev": "NODE_ENV=dev node start.js",
+    "start:prod": "node start.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
