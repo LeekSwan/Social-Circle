@@ -7,13 +7,14 @@ const express = require('express')
 const path = require('path');
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 
 var index_router = require('./routes/index.js')
 
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+// Leave out react stuff for heroku black triangle
+// // Serve the static files from the React app
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/', index_router)
 
