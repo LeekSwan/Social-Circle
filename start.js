@@ -12,9 +12,8 @@ const port = process.env.PORT || 8080
 
 var index_router = require('./routes/index.js')
 
-// Leave out react stuff for heroku black triangle
-// // Serve the static files from the React app
-// app.use(express.static(path.join(__dirname, 'client/build')));
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/', index_router)
 
@@ -24,6 +23,4 @@ app.get('*', (req,res) =>{
 });
 
 
-// app.get('/', (req, res) => res.send('Hello World!'))
-
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(port, () => console.log(`Express app listening at http://localhost:${port}`))
