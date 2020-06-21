@@ -9,13 +9,13 @@ class getPostgres extends React.Component {
         super(props);
         this.state = { persons: ['placeholder name'] }
 
-        this.handleClick = this.handleClick.bind(this); 
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
-        axios.get(`/test`)
+        axios.get(`/test-db`)
             .then(res => {
-                console.log('componentDidMount: axios.get(/test).then');
+                console.log('componentDidMount: axios.get(/test-db).then');
                 console.log(res.data);
                 const persons = res.data;
                 this.setState({
@@ -24,7 +24,6 @@ class getPostgres extends React.Component {
         })
     }
 
-    
 
     render() {
         return (
