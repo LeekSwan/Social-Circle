@@ -9,7 +9,7 @@ class getPostgres extends React.Component {
         super(props);
         this.state = { persons: ['placeholder name'] }
 
-        this.handleClick = this.handleClick.bind(this); 
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
@@ -24,7 +24,7 @@ class getPostgres extends React.Component {
         })
     }
 
-    
+
 
     render() {
         return (
