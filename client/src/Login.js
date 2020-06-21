@@ -14,10 +14,8 @@ class Login extends React.Component {
       <BrowserRouter>
         <div>
             <Switch>
-              {/* Add routes here */}
              <Route path="/" component={Home} exact/>
-      
-           </Switch>
+            </Switch>
         </div> 
       </BrowserRouter>
     );
@@ -26,32 +24,49 @@ class Login extends React.Component {
 
 class Home extends React.Component {
   constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this);
-    this.state = { 
+    super(props);
+    this.state = {
       firstname: '',
       lastname: '',
-      email: ''  
-    }
+      email: ''
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
 
-  handleClick() {
-    console.log('Button has been pressed')
-    
+  handleSubmit(e) { 
+    // Implement null check
+    // Implement check for duplicate users
+
     axios.post(`/api/users`, this.state)
       .then(req  => {
+        console.log(this.state);
         if (req.data.status === 'success'){
           console.log("Data sent"); 
           // this.resetForm()
+          // redirect user to add friends page
         }else if(req.data.status === 'fail'){
           console.log("it failed m8");
         } 
-      })
+      });
+    e.preventDefault();
   }
 
-  // Will need a way to clear from after submission
-  resetForm() { 
+  // Sets state of inputs
+  handleChange(e) {
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    }); 
+  }
+
+
+  // Implement a way to clear from after submission
+  resetForm(e) { 
   }
 
 
@@ -62,21 +77,30 @@ class Home extends React.Component {
         <h2>Social Circle or whatever the name is</h2>
         <h5>Some sort of explanation for how the app works</h5>
 
-        <form>
-          <label htmlFor="firstname">First Name</label>
-          <input id="firstname" name="firstname" type="text" />
-
-          <label htmlFor="lastname">Last Name</label>
-          <input id="lastname" name="lastname" type="text" />
-
-          <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" />
-
-          <button onClick={this.handleClick}>Submit or die!</button>
+        <form onSubmit={this.handleSubmit}>
+          <p>Firstname:</p>
+          <input
+            type='text'
+            name='firstname'
+            onChange={this.handleChange}
+          />
+          <p>Lastname:</p>
+          <input
+            type='text'
+            name='lastname'
+            onChange={this.handleChange}
+          />
+          <p>Email:</p>
+          <input
+            type='email'
+            name='email'
+            onChange={this.handleChange}
+          />
+          <input type="submit" value="Submit" />
         </form>
       </div>
 
-    )
+    );
   }
 }
 

@@ -2,10 +2,11 @@ var express = require('express')
 var router = express.Router()
 var db = require('../db/index.js');
 const { query } = require('express');
-
+var bodyParser = require("body-parser");
+router.use(bodyParser.json())
 
 router.get('/', function(req,res) {
-    console.log.("get route / is here")
+    console.log("get route / is here")
 
 })
 
@@ -21,12 +22,14 @@ router.get('/test', function(req,res) {
 })
 
 // Route for login/adding new user
-router.post('api/users', function(req,res){
+router.post('/api/users', function(req,res){
     const { firstname, lastname, email } = req.body
-    const query = ('INSERT INTO users (firstname, lastname, email) VALUES ($1, $2, $3)', [firstname, lastname, email])
-    db.query(query)
+    const name = 'insert new user';
+    const sql = "INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)";
+    const value = [firstname, lastname, email];
+    db.query({name, sql, value})
     .then(results => {
-        response.status(201).json({ status: 'success', message: 'User added' })
+        console.log("data sent to db")
     })
 })
 
