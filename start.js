@@ -1,5 +1,11 @@
-if (process.env.NODE_ENV == 'dev') {
-    console.log('Dev environment detected! :)')
+// Set NODE_ENV to 'dev' by default
+if (!('NODE_ENV' in process.env)) {
+    process.env.NODE_ENV = 'dev';
+    console.log('Automatically setting NODE_ENV to `dev`')
+}
+// Load local .env file in dev environments
+if (process.env.NODE_ENV === 'dev') {
+    console.log('Dev environment detected! :) // loading .env file')
     require('dotenv').config()
 }
 
