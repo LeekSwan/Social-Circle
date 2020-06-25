@@ -3,12 +3,17 @@ const { Client } = require('pg');
 function getClient() {
     let db_params = {}
     if (process.env.NODE_ENV === 'production') {
-        db_params = {
-            connectionString: process.env.DATABASE_URL,
-            ssl: {
-                rejectUnauthorized: false
-            }
-        };
+        if ('DATABASE_URL' in process.env) {
+            db_params = {
+                connectionString: process.env.DATABASE_URL,
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            };
+        } else {
+            console.log('(prod) process.env.DATABASE_URL does not exist --> skipping db');
+            console.log('(prod) If this is a review app, you must manually add the config var in Heroku')
+        }
     } else if (process.env.NODE_ENV === 'dev') {
         db_params = {
             user: process.env.PG_LOCAL_USER,
