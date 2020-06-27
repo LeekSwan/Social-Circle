@@ -10,13 +10,13 @@ import {
 
 class Login extends React.Component {
   render() {
-    return (      
+    return (
       <BrowserRouter>
         <div>
             <Switch>
              <Route path="/" component={Home} exact/>
             </Switch>
-        </div> 
+        </div>
       </BrowserRouter>
     );
   }
@@ -35,7 +35,7 @@ class Home extends React.Component {
   }
 
 
-  handleSubmit(e) { 
+  handleSubmit(e) {
     // Implement null check
     // Implement check for duplicate users
     console.log("Button was pressed")
@@ -43,13 +43,13 @@ class Home extends React.Component {
     axios.post(`/api/users`, this.state)
       .then(req  => {
         console.log(this.state);
-        if (req.data.status === 'success'){
-          console.log("Data sent"); 
+        if (req.status >= 200){
+          console.log("Data sent");
           // this.resetForm()
           // redirect user to add friends page
-        }else if(req.data.status === 'fail'){
+        } else {
           console.log("it failed m8");
-        } 
+        }
       });
     e.preventDefault();
   }
@@ -62,12 +62,12 @@ class Home extends React.Component {
 
     this.setState({
       [name]: value
-    }); 
+    });
   }
 
 
   // Implement a way to clear from after submission
-  resetForm(e) { 
+  resetForm(e) {
   }
 
 

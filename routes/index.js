@@ -37,8 +37,14 @@ router.post('/api/users', function(req,res){
     db.query(query)
     .then(results => {
         console.log("data sent to db")
+        console.log(results)
     })
+    .catch(err => {
+        console.log(err);
+        res.status(400).json(err);
+    })
+    res.status(201).send('OK');
 })
- 
+
 
 module.exports = router
