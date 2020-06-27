@@ -1,7 +1,6 @@
 var express = require('express')
 var router = express.Router()
 var db = require('../db/index.js');
-const { query } = require('express');
 var bodyParser = require("body-parser");
 router.use(bodyParser.json())
 
@@ -19,7 +18,6 @@ router.get('/test-db', function(req,res) {
 
 // Route for login/adding new user
 router.post('/api/users', function(req,res){
-    console.log("data got to express")
     const { firstname, lastname, email } = req.body
 
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
@@ -40,7 +38,6 @@ router.post('/api/users', function(req,res){
             console.log(err);
             res.status(400).json(err);
         })
-        res.status(201).send('OK');
     }
 })
 
