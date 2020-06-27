@@ -4,8 +4,13 @@
   "description": "",
   "main": "start.js",
   "scripts": {
-    "start": "NODE_ENV=dev node start.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd client && npm run build",
+    "start": "cd client && npm start",
+    "server": "npm run start:dev",
+    "start:dev": "cross-env NODE_ENV=dev node start.js",
+    "start:prod": "node start.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,5 +28,8 @@
     "express": "^4.17.1",
     "pg": "^8.2.1",
     "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
   }
 }

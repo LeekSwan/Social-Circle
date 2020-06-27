@@ -5,15 +5,11 @@ const { query } = require('express');
 var bodyParser = require("body-parser");
 router.use(bodyParser.json())
 
-router.get('/', function(req,res) {
-    console.log("get route / is here")
-
+router.get('/test', function (req,res) {
+    res.send('works for me');
 })
 
-
-
-// Route to get sql data
-router.get('/test', function(req,res) {
+router.get('/test-db', function(req,res) {
     const query = 'Select * from users';
     db.query(query)
     .then(results => {
@@ -23,15 +19,26 @@ router.get('/test', function(req,res) {
 
 // Route for login/adding new user
 router.post('/api/users', function(req,res){
+    console.log("data got to express")
+
+
     const { firstname, lastname, email } = req.body
-    const name = 'insert new user';
-    const sql = "INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)";
-    const value = [firstname, lastname, email];
-    db.query({name, sql, value})
+
+    // const name = 'Add new user';
+    // const sql = "INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)";
+    // const value = [firstname, lastname, email];
+    // db.query({name, sql, value})
+
+    const query = {
+        text: 'INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)',
+        values: [firstname, lastname, email],
+    }
+
+    db.query(query)
     .then(results => {
         console.log("data sent to db")
     })
 })
-
+ 
 
 module.exports = router

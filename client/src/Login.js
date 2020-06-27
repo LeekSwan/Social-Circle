@@ -38,7 +38,8 @@ class Home extends React.Component {
   handleSubmit(e) { 
     // Implement null check
     // Implement check for duplicate users
-
+    console.log("Button was pressed")
+    console.log(this.state);
     axios.post(`/api/users`, this.state)
       .then(req  => {
         console.log(this.state);
