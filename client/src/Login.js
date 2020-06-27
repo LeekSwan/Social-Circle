@@ -36,21 +36,24 @@ class Home extends React.Component {
 
 
   handleSubmit(e) {
-    // Implement null check
     // Implement check for duplicate users
-    console.log("Button was pressed")
-    console.log(this.state);
-    axios.post(`/api/users`, this.state)
+   
+    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+      alert('Input field empty')
+    } else {
+      axios.post(`/api/users`, this.state)
       .then(req  => {
         console.log(this.state);
         if (req.status >= 200){
           console.log("Data sent");
-          // this.resetForm()
           // redirect user to add friends page
         } else {
           console.log("it failed m8");
         }
       });
+    }
+
+    
     e.preventDefault();
   }
 
@@ -63,11 +66,6 @@ class Home extends React.Component {
     this.setState({
       [name]: value
     });
-  }
-
-
-  // Implement a way to clear from after submission
-  resetForm(e) {
   }
 
 
@@ -98,6 +96,7 @@ class Home extends React.Component {
             onChange={this.handleChange}
           />
           <input type="submit" value="Submit" />
+ 
         </form>
       </div>
 

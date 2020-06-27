@@ -20,30 +20,28 @@ router.get('/test-db', function(req,res) {
 // Route for login/adding new user
 router.post('/api/users', function(req,res){
     console.log("data got to express")
-
-
     const { firstname, lastname, email } = req.body
 
-    // const name = 'Add new user';
-    // const sql = "INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)";
-    // const value = [firstname, lastname, email];
-    // db.query({name, sql, value})
+    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+        res.status(400).send('Input field empty');
+        alert('Input field empty');
+      } else {
+        const query = {
+            text: 'INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)',
+            values: [firstname, lastname, email],
+        }
 
-    const query = {
-        text: 'INSERT INTO users(firstname, lastname, email) VALUES ($1, $2, $3)',
-        values: [firstname, lastname, email],
+        db.query(query)
+        .then(results => {
+            console.log("data sent to db")
+            console.log(results)
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        })
+        res.status(201).send('OK');
     }
-
-    db.query(query)
-    .then(results => {
-        console.log("data sent to db")
-        console.log(results)
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(400).json(err);
-    })
-    res.status(201).send('OK');
 })
 
 
