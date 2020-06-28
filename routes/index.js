@@ -3,6 +3,8 @@ var router = express.Router()
 var db = require('../db/index.js');
 var bodyParser = require("body-parser");
 router.use(bodyParser.json())
+const { v1: uuidv1 } = require('uuid');
+
 
 router.get('/test', function (req,res) {
     res.send('works for me');
@@ -20,7 +22,7 @@ router.get('/test-db', function(req,res) {
 router.post('/api/users', function(req,res){
     const { firstname, lastname, email } = req.body
 
-    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+    if (!firstname || !lastname || !email) {
         res.status(400).send('Input field empty');
         alert('Input field empty');
       } else {

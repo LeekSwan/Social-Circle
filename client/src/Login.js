@@ -43,7 +43,6 @@ class Home extends React.Component {
     } else {
       axios.post(`/api/users`, this.state)
       .then(req  => {
-        console.log(this.state);
         if (req.status >= 200){
           console.log("Data sent");
           // redirect user to add friends page
