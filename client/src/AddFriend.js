@@ -8,8 +8,7 @@ class AddFriend extends React.Component {
     render() {
         return (
             <div>
-            <h2>Social Circle or whatever the name is</h2>
-            <h5>Some sort of explanation for how the app works</h5>
+            <h2>Add Friends Page</h2>
             </div>
         );
     }
