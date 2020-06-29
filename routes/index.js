@@ -1,16 +1,16 @@
-var express = require('express')
-var router = express.Router()
-var db = require('../db/index.js')
+const express = require('express')
+const router = express.Router()
+const db = require('../db')
 
 router.get('/test', function (req,res) {
-    res.send('works for me');
+    res.send('works for me')
 })
 
 router.get('/test-db', function(req,res) {
-    const query = 'Select * from users';
+    const query = 'Select * from users'
     db.query(query)
     .then(results => {
-        res.send(results.rows);
+        res.send(results.rows)
     })
 })
 
