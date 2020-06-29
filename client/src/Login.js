@@ -33,10 +33,8 @@ class Home extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-
   handleSubmit(e) {
     // Implement check for duplicate users
-   
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
       alert('Input field empty')
     } else {
@@ -91,7 +89,6 @@ class Home extends React.Component {
           <input type="submit" value="Submit" />
         </form>
       </div>
-
     );
   }
 }
