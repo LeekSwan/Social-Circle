@@ -42,9 +42,10 @@ class Home extends React.Component {
       alert('Input field empty')
     } else {
       axios.post(`/api/users`, this.state)
-      .then(req  => {
-        if (req.status >= 200){
-          console.log("Data sent");
+      .then(res  => {
+        if (res.status >= 200){
+          console.log("Data sent"); 
+          console.log(res.data)
           // redirect user to add friends page
         } else {
           console.log("it failed m8");
