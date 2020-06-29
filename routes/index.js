@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../db/index.js')
+const db = require('../db')
 const mailClient = require('../mail/index.js')
 
 router.get('/test', function (req,res) {
@@ -8,7 +8,7 @@ router.get('/test', function (req,res) {
 })
 
 router.get('/test-db', function(req,res) {
-    const query = 'Select * from users';
+    const query = 'Select * from users'
     db.query(query)
     .then(results => {
         res.send(results.rows)
@@ -28,7 +28,7 @@ router.get('/test-mail', function(req,res) {
         .send(msg)
         .then(() => {
             console.log('sent test message without errors')
-            res.status(202).send('ok sent');
+            res.status(202).send('ok sent')
         }, error => {
             console.error(error)
             if (error.response) {
