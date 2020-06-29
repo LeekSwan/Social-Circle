@@ -24,25 +24,19 @@ router.post('/api/users', function(req,res){
     const secret = uuidv1();
 
     if (!firstname || !lastname || !email) {
-        res.status(400).send('Input field empty');
         alert('Input field empty');
-      } else {
-        const query = {
-            text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-            values: [firstname, lastname, email, secret],
-        }
-        db.query(query)
-        .then(result => {
-            console.log("data sent to db")
-            res.send([firstname, lastname, email, secret])
-            // console.log(res)
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(400).json(err);
-        })
+        return res.status(400).send('Input field empty');
     }
+    const query = {
+        text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
+        values: [firstname, lastname, email, secret],
+    }
+    db.query(query)
+    .then(result => {
+        res.send([firstname, lastname, email, secret])
+    })
+    .catch(err => {
+        res.status(400).json(err);
+    })
 })
-
-
 module.exports = router

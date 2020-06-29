@@ -5,8 +5,7 @@ import {
     Switch,
     Route,
     Link
-  } from "react-router-dom";
-
+} from "react-router-dom";
 
 class Login extends React.Component {
   render() {
@@ -52,8 +51,6 @@ class Home extends React.Component {
         }
       });
     }
-
-    
     e.preventDefault();
   }
 
@@ -62,20 +59,16 @@ class Home extends React.Component {
     const target = e.target;
     const value = target.value;
     const name = target.name;
-
     this.setState({
       [name]: value
     });
   }
 
-
   render() {
     return (
-
       <div>
         <h2>Social Circle or whatever the name is</h2>
         <h5>Some sort of explanation for how the app works</h5>
-
         <form onSubmit={this.handleSubmit}>
           <p>Firstname:</p>
           <input
@@ -96,14 +89,10 @@ class Home extends React.Component {
             onChange={this.handleChange}
           />
           <input type="submit" value="Submit" />
- 
         </form>
       </div>
 
     );
   }
 }
-
-
-
 export default Login;
