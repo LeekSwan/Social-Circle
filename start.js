@@ -11,16 +11,19 @@ if (process.env.NODE_ENV === 'dev') {
 
 const express = require('express')
 const path = require('path');
+const morgan = require('morgan')
 
 const app = express()
 const port = process.env.PORT || 8080
 
-
-var index_router = require('./routes/index.js')
+// Log all HTTP requests
+app.use(morgan('dev'))
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+// Serve the express routes
+const index_router = require('./routes/index.js')
 app.use('/', index_router)
 
 // Handles any requests that don't match the ones above
