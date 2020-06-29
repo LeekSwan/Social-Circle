@@ -1,27 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import {
-    BrowserRouter,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+
 
 class Login extends React.Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <div>
-            <Switch>
-             <Route path="/" component={Home} exact/>
-            </Switch>
-        </div>
-      </BrowserRouter>
-    );
-  }
-}
-
-class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
