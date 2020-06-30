@@ -5,7 +5,7 @@ const db = require('../db')
 const mailClient = require('../mail/index.js')
 var bodyParser = require("body-parser");
 router.use(bodyParser.json())
-const { v1: uuidv1 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 
 router.get('/test', function (req,res) {
@@ -46,7 +46,7 @@ router.get('/test-mail', function(req,res) {
 // Route for login/adding new user
 router.post('/api/users', function(req,res){
   const { firstname, lastname, email } = req.body
-  const secret = uuidv1();
+  const secret = uuidv4();
 
   if (!firstname || !lastname || !email) {
     alert('Input field empty');
@@ -54,7 +54,7 @@ router.post('/api/users', function(req,res){
   }
   const query = {
     text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-    values: [firstname, lastname, email, secret],
+    values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret],
   }
   db.query(query)
   .then(result => {
@@ -67,8 +67,13 @@ router.post('/api/users', function(req,res){
 
 
 // Route for getting user data from secret
-router.get('/',  function(req, res) {
+router.get('/api/user/:secret',  function(req, res) {
 
+  const query = 'Select * from users WHERE secret='
+  db.query(query)
+  .then(results => {
+    res.send(results.rows)
+  })
 
 
 })
@@ -77,8 +82,8 @@ router.get('/',  function(req, res) {
 
 
 // Route for adding friends
-router.post('', function(req, res) {
-
+router.post('/api/friendships', function(req, res) {
+  const { firstname, lastname, email } = req.body
 
 
 
