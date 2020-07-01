@@ -11,8 +11,8 @@
     "start:prod": "node start.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "cd client && npm install && npm run build",
-    "lint": "standard",
-    "lint-fix": "standard --fix"
+    "lint": "standard | snazzy",
+    "lint-fix": "standard --fix | snazzy"
   },
   "repository": {
     "type": "git",
@@ -35,11 +35,12 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
+    "snazzy": "^8.0.0",
     "standard": "^14.3.4"
   },
   "standard": {
-      "ignore": [
-          "client/build"
-      ]
+    "ignore": [
+      "client/build"
+    ]
   }
 }
