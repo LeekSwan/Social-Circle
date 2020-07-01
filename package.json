@@ -10,7 +10,9 @@
     "start:dev": "cross-env NODE_ENV=dev node start.js",
     "start:prod": "node start.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "lint": "standard",
+    "lint-fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,12 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "standard": "^14.3.4"
+  },
+  "standard": {
+      "ignore": [
+          "client/build"
+      ]
   }
 }
