@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom'
 
 
 
@@ -14,11 +15,13 @@ class AddFriend extends React.Component {
 	}
 
 	
+	
 
+	
 
 	//Handles add friend button 
-	handleAdd(e) {
-
+	fetchUserData(e) {
+		axios.get(`/api/user/:secret`) 
 	}
 
 
@@ -29,9 +32,9 @@ class AddFriend extends React.Component {
 				<h2>Social Circle</h2>
 				<h5>Hi (user name)! Add your friends below.</h5>
 
-				<input type="AddFriend" value="Add Friend" onSubmit={this.handleAdd}/>
+				<input type="AddFriend" value="Add Friend" onSubmit={this.fetchUserData}/>
 
-
+				<h5>{this.props.location.pathname}</h5>
 				<h5>Total Count</h5>
 				<h5>0</h5>
 			</div>
@@ -39,5 +42,7 @@ class AddFriend extends React.Component {
 	}
 
 }
+
+
 
 export default AddFriend;

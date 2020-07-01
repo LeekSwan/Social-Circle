@@ -67,8 +67,10 @@ router.post('/api/users', function(req,res){
 
 // Route for getting user data from secret
 router.get('/api/user/:secret',  function(req, res) {
-
-  const query = 'Select * from users WHERE secret='
+  const query = {
+    text: 'Select * FROM users WHERE secret = $1',
+    values: [req.params.secret],
+  }
   db.query(query)
   .then(results => {
     res.send(results.rows)
