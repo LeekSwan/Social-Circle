@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -22,9 +21,8 @@ class Login extends React.Component {
       axios.post(`/api/users`, this.state)
       .then(res  => {
         if (res.status >= 200){
-          console.log("Data sent"); 
-          console.log(res.data)
-          // redirect user to add friends page
+          console.log(res.data[3])
+          this.props.history.push({pathname: '/user/' + res.data[3]})
         } else {
           console.log("it failed m8");
         }
@@ -68,6 +66,7 @@ class Login extends React.Component {
             onChange={this.handleChange}
           />
           <input type="submit" value="Submit" />
+          
         </form>
       </div>
     );
