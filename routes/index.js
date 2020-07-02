@@ -75,7 +75,9 @@ router.get('/api/user/:secret',  function(req, res) {
   .then(results => {
     res.send(results.rows)
   })
-
+  .catch(err => {
+    res.status(404).json(err);
+  })
 
 })
 
