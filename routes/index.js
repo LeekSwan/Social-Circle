@@ -5,6 +5,7 @@ const mailClient = require('../mail/index.js')
 var bodyParser = require("body-parser");
 router.use(bodyParser.json())
 const { v4: uuidv4 } = require('uuid');
+const { Connection } = require('pg');
 
 
 router.get('/test', function (req,res) {
@@ -51,6 +52,20 @@ router.post('/api/users', function(req,res){
     alert('Input field empty');
     return res.status(400).send('Input field empty');
   }
+  
+  // Checks for duplicate
+  const checkdup = {
+    text: 'SELECT COUNT(email) FROM users WHERE email = $1',
+    values: [email.toLowerCase()],
+  }
+  db.query(checkdup)
+  .then(result => {
+    if (result.rows[0].count != 0) {
+      res.status(240)
+    }
+  })
+
+  //Insert user data
   const query = {
     text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
     values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret],
@@ -62,7 +77,9 @@ router.post('/api/users', function(req,res){
   .catch(err => {
     res.status(400).json(err);
   })
+
 })
+
 
 
 // Route for getting user data from secret

@@ -23,7 +23,7 @@ class AddFriend extends React.Component {
 					lastname: user.lastname
 				});
 			})
-		// Capitalize the fucking name cause I forgot we passed everything into db as lowercase
+		// Capitalize the name cause I forgot we passed everything into db as lowercase
 	}
 
 	handleAdd() {
