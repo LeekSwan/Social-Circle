@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Pre-commit hook for StandardJS linter
+# https://standardjs.com/#is-there-a-git-pre-commit-hook
+# (Plus some color added)
+#
+# Move to folder `.git/hooks/` and rename to `pre-commit`
+
+# Ensure all JavaScript files staged for commit pass standard code style
+function xargs-r() {
+  # Portable version of "xargs -r". The -r flag is a GNU extension that
+  # prevents xargs from running if there are no input files.
+  if IFS= read -r -d $'\n' path; then
+    { echo "$path"; cat; } | xargs $@
+  fi
+}
+git diff --name-only --cached --relative | grep '\.jsx\?$' | sed 's/[^[:alnum:]]/\\&/g' | xargs-r -E '' -t standard
+if [[ $? -ne 0 ]]; then
+  RED='\033[0;31m'
+  NC='\033[0m' # No Color
+  echo -e "${RED}JavaScript Standard Style errors were detected. ${NC}Aborting commit."
+  echo 'Use `npm run lint-fix` to try to auto-fix them.'
+  exit 1
+fi

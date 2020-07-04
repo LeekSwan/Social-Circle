@@ -1,50 +1,49 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import axios from 'axios'
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       firstname: '',
       lastname: '',
       email: ''
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     // Implement check for duplicate users
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
-      return alert('Input field empty')
-    } 
-    axios.post(`/api/users`, this.state)
-    .then(res  => {
-      console.log(res)
-      if (res.status === 240) {
-        alert('You already have already created an account with this email! Please check your email to login.')
-      } 
-      else if (res.status >= 200) {
-        this.props.history.push({pathname: '/user/' + res.data[3]})
-      } else {
-        console.log("it failed m8");
-      }
-    });
-    
-    e.preventDefault();
+      return window.alert('Input field empty')
+    }
+    axios.post('/api/users', this.state)
+      .then(res => {
+        console.log(res)
+        if (res.status === 240) {
+          window.alert('You already have already created an account with this email! Please check your email to login.')
+        } else if (res.status >= 200) {
+          this.props.history.push({ pathname: '/user/' + res.data[3] })
+        } else {
+          console.log('it failed m8')
+        }
+      })
+
+    e.preventDefault()
   }
 
   // Sets state of inputs
-  handleChange(e) {
-    const target = e.target;
-    const value = target.value;
-    const name = target.name;
+  handleChange (e) {
+    const target = e.target
+    const value = target.value
+    const name = target.name
     this.setState({
       [name]: value
-    });
+    })
   }
 
-  render() {
+  render () {
     return (
       <div>
         <h2>Social Circle or whatever the name is</h2>
@@ -68,11 +67,11 @@ class Login extends React.Component {
             name='email'
             onChange={this.handleChange}
           />
-          <input type="submit" value="Submit" />
-          
+          <input type='submit' value='Submit' />
+
         </form>
       </div>
-    );
+    )
   }
 }
-export default Login;
+export default Login
