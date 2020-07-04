@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -17,19 +16,21 @@ class Login extends React.Component {
   handleSubmit(e) {
     // Implement check for duplicate users
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
-      alert('Input field empty')
-    } else {
-      axios.post(`/api/users`, this.state)
-      .then(res  => {
-        if (res.status >= 200){
-          console.log("Data sent"); 
-          console.log(res.data)
-          // redirect user to add friends page
-        } else {
-          console.log("it failed m8");
-        }
-      });
-    }
+      return alert('Input field empty')
+    } 
+    axios.post(`/api/users`, this.state)
+    .then(res  => {
+      console.log(res)
+      if (res.status === 240) {
+        alert('You already have already created an account with this email! Please check your email to login.')
+      } 
+      else if (res.status >= 200) {
+        this.props.history.push({pathname: '/user/' + res.data[3]})
+      } else {
+        console.log("it failed m8");
+      }
+    });
+    
     e.preventDefault();
   }
 
@@ -68,6 +69,7 @@ class Login extends React.Component {
             onChange={this.handleChange}
           />
           <input type="submit" value="Submit" />
+          
         </form>
       </div>
     );
