@@ -1,12 +1,12 @@
 // Set NODE_ENV to 'dev' by default
 if (!('NODE_ENV' in process.env)) {
-    process.env.NODE_ENV = 'dev'
-    console.log('Automatically setting NODE_ENV to `dev`')
+  process.env.NODE_ENV = 'dev'
+  console.log('Automatically setting NODE_ENV to `dev`')
 }
 // Load local .env file in dev environments
 if (process.env.NODE_ENV === 'dev') {
-    console.log('Dev environment detected! :) // loading .env file')
-    require('dotenv').config()
+  console.log('Dev environment detected! :) // loading .env file')
+  require('dotenv').config()
 }
 
 const express = require('express')
@@ -23,13 +23,12 @@ app.use(morgan('dev'))
 app.use(express.static(path.join(__dirname, 'client/build')))
 
 // Serve the express routes
-const index_router = require('./routes/index.js')
-app.use('/', index_router)
+const indexRouter = require('./routes/index.js')
+app.use('/', indexRouter)
 
 // Handles any requests that don't match the ones above
-app.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname+'/client/build/index.html'))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/client/build/index.html'))
 })
-
 
 app.listen(port, () => console.log(`Express app listening at http://localhost:${port}`))

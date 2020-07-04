@@ -1,5 +1,5 @@
-import React from 'react';
-import './App.css';
+import React from 'react'
+import './App.css'
 import Login from './Login'
 import AddFriend from './AddFriend'
 import {
@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 
 class App extends React.Component {
-  render() {
+  render () {
     return (
       <Router>
         <div>
@@ -16,7 +16,7 @@ class App extends React.Component {
           <Route path='/user/:secret' component={AddFriend} />
         </div>
       </Router>
-    );
+    )
   }
 }
-export default App;
+export default App
