@@ -21,7 +21,7 @@ class Login extends React.Component {
     axios.post('/api/users', this.state)
       .then(res => {
         console.log(res)
-        if (res.status === 240) {
+        if (res.status === 409) {
           window.alert('You already have already created an account with this email! Please check your email to login.')
         } else if (res.status >= 200) {
           this.props.history.push({ pathname: '/user/' + res.data[3] })

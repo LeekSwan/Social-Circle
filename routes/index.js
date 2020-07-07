@@ -42,6 +42,9 @@ router.get('/test-mail', function (req, res) {
 })
 
 // Route for login/adding new user
+// If request is missing parameters, returns 400
+// If request is for existing user, returns 409
+// Else, creates user and returns 201 along with user data
 router.post('/api/users', function (req, res) {
   const { firstname, lastname, email } = req.body
   const secret = uuidv4()
@@ -58,8 +61,10 @@ router.post('/api/users', function (req, res) {
   }
   db.query(checkdup)
     .then(result => {
+      //Checks for duplicates. Query returns counts where email is user's  input email. If count is > 1, 
+      // then there is a duplicate. 
       if (result.rows[0].count !== 0) {
-        res.status(240)
+        res.status(409)
       }
     })
 
@@ -73,7 +78,7 @@ router.post('/api/users', function (req, res) {
       res.send([firstname, lastname, email, secret])
     })
     .catch(err => {
-      res.status(400).json(err)
+      res.status(500).json(err)
     })
 })
 
