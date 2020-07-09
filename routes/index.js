@@ -61,26 +61,35 @@ router.post('/api/users', function (req, res) {
   }
   db.query(checkdup)
     .then(result => {
-      //Checks for duplicates. Query returns counts where email is user's  input email. If count is > 1, 
-      // then there is a duplicate. 
-      if (result.rows[0].count !== 0) {
-        res.status(409)
+      //Checks for duplicates. Query returns counts where email is user's  input email. If count is > 1, then there is a duplicate. 
+      if (result.rows[0].count != 0) {
+        console.log(result.rows[0].count)
+        res.status(409).send({message:"exist"})
+      } else {
+
+        // Insert user data
+        const query = {
+          text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
+          values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
+        }
+        db.query(query)
+          .then(result => {
+            res.send([firstname, lastname, email, secret])
+          })
+          .catch(err => {
+            res.status(500).json(err)
+          })
+
       }
     })
-
-  // Insert user data
-  const query = {
-    text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-    values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
-  }
-  db.query(query)
-    .then(result => {
-      res.send([firstname, lastname, email, secret])
-    })
-    .catch(err => {
-      res.status(500).json(err)
-    })
+ 
+  
 })
+
+
+
+
+
 
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
@@ -100,6 +109,12 @@ router.get('/api/user/:secret', function (req, res) {
 // Route for adding friends
 router.post('/api/friendships', function (req, res) {
   // const { firstname, lastname, email } = req.body
+
+  // check if duplicate
+
+  // add to query
+
+
 })
 
 module.exports = router
