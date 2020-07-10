@@ -11,9 +11,11 @@ class AddFriend extends React.Component {
     }
   }
 
+  
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
+        console.log(res)
         const user = res.data[0]
         this.setState({
           firstname: user.firstname,

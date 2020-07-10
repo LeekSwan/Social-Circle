@@ -53,58 +53,43 @@ router.post('/api/users', function (req, res) {
     console.log('Input field empty')
     return res.status(400).send('Input field empty')
   }
-
+  // Checks for duplicate
   CheckDup(email)
-  .then((data) => {
-    console.log(data)
-  })
-  
-  // // Checks for duplicate
-  // const checkdup = {
-  //   text: 'SELECT COUNT(email) FROM users WHERE email = $1',
-  //   values: [email.toLowerCase()]
-  // }
-  // db.query(checkdup)
-  //   .then(result => {
-  //     //Checks for duplicates. Query returns counts where email is user's  input email. If count is > 1, then there is a duplicate. 
-  //     if (result.rows[0].count != 0) {
-  //       console.log(result.rows[0].count)
-  //       res.status(409).send({message:"exist"})
-  //     } else {
+    .then(result => {
+      if (result != 0) {
+        console.log(result)
+        res.status(409).send({message:"exist"})
+      } else {
 
-  //       // Insert user data
-  //       const query = {
-  //         text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-  //         values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
-  //       }
-  //       db.query(query)
-  //         .then(result => {
-  //           res.send([firstname, lastname, email, secret])
-  //         })
-  //         .catch(err => {
-  //           res.status(500).json(err)
-  //         })
-
-  //     }
-  //   })
+        // Insert user data
+        const query = {
+          text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
+          values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
+        }
+        db.query(query)
+          .then(result => {
+            res.send([firstname, lastname, email, secret])
+          })
+          .catch(err => {
+            res.status(500).json(err)
+          })
+      }
+    })
  
   
 })
 
-
-
+// Helper function for checking user duplicates using email
+// Goes through database and counts where email matches
 async function CheckDup(email) {
   const checkdup = {
     text: 'SELECT COUNT(email) FROM users WHERE email = $1',
     values: [email.toLowerCase()]
   }
-
   return await db.query(checkdup)
   .then(function(result) {
     return result.rows[0].count
   })
-  
-
 }
 
 
