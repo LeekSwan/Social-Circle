@@ -96,7 +96,7 @@ async function CheckDup(email) {
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
   const query = {
-    text: 'SELECT f.user1 ,users.firstname, f.user2, u.firstname AS friendfname, u.lastname As friendlname \
+    text: 'SELECT f.user1, users.firstname, users.lastname, f.user2, u.firstname AS friendfname, u.lastname As friendlname \
             FROM users \
             LEFT JOIN friendships AS f ON  f.user1 = users.id \
             LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
