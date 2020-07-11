@@ -57,7 +57,7 @@ router.post('/api/users', function (req, res) {
   CheckDup(email)
     .then(result => {
       if (result != 0) {
-        console.log(result)
+        // console.log(result)
         res.status(409).send({message:"exist"})
       } else {
 
@@ -96,12 +96,16 @@ async function CheckDup(email) {
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
   const query = {
-    text: 'Select * FROM users WHERE secret = $1',
+    text: 'SELECT f.user1 ,users.firstname, f.user2, u.firstname AS friendfname, u.lastname As friendlname \
+            FROM users \
+            LEFT JOIN friendships AS f ON  f.user1 = users.id \
+            LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
     values: [req.params.secret]
   }
   db.query(query)
     .then(results => {
-      res.send(results.rows)
+      res.send(results)
+      console.log(results)
     })
     .catch(err => {
       res.status(404).json(err)
@@ -114,7 +118,10 @@ router.post('/api/friendships', function (req, res) {
 
   // check if duplicate
 
-  // add to query
+  // add user to users table
+
+  // add friendship to friendship table (friender id, id of added friend)
+
 
 
 })

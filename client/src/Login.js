@@ -13,7 +13,7 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  handleSubmit (e) {
+  handleSubmit(e) {
     // Implement check for duplicate users
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
       return window.alert('Input field empty')
