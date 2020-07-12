@@ -13,18 +13,17 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  handleSubmit(e) {
-    // Implement check for duplicate users
+  handleSubmit (e) {
     if (!this.state.firstname || !this.state.lastname || !this.state.email) {
       return window.alert('Input field empty')
     }
     axios.post('/api/users', this.state)
       .then(res => {
-        console.log(res)
-        if (res.status === 409) {
+        console.log(res.status)
+        if (res.status >= 200) {
+          this.props.history.push({ pathname: '/user/' + res.data.secret })
+        } else if (res.status === 409) {
           window.alert('You already have already created an account with this email! Please check your email to login.')
-        } else if (res.status >= 200) {
-          this.props.history.push({ pathname: '/user/' + res.data[3] })
         } else {
           console.log('it failed m8')
         }

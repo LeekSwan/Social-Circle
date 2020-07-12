@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 
-
 class AddFriend extends React.Component {
   constructor (props) {
     super(props)
@@ -9,42 +8,47 @@ class AddFriend extends React.Component {
       firstname: '',
       lastname: '',
       friendships: [],
-      friendfirstname: 'Friends first name',
-      friendlastname: 'Friends last name',
-      friendemail: 'Friends email'
+      newFriend: {
+        friendfirstname: 'Friends first name',
+        friendlastname: 'Friends last name',
+        friendemail: 'Friends email'
+      }
+
     }
+
+    this.handleAdd = this.handleAdd.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  
-  
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
-        console.log(res)
-        const user = res.data.rows[0]
-        const friends = getfriends(res)
         this.setState({
-          firstname: user.firstname,
-          lastname: user.lastname,
-          friendships: friends
+          firstname: res.data.firstname,
+          lastname: res.data.lastname,
+          friendships: res.data.friendslist
         })
       })
-    // Capitalize the name cause I forgot we passed everything into db as lowercase
   }
 
-
-
-  handleAdd(e) {
+  handleAdd (e) {
     // check for empty inputs
-    // 
+    // Add new user to users table
+    // Add friend relationship to friendships table
 
+    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+      return window.alert('Input field empty')
+    }
+    axios.post('/api/friendships', this.state)
+      .then(res => {
 
+      })
+    e.preventDefault()
   }
 
-  handleChange(e) {
-
+  handleChange (e) {
+    // handles changes to add friend inputs
   }
-  
 
   render () {
     return (
@@ -53,31 +57,31 @@ class AddFriend extends React.Component {
         <h5>Hi {this.state.firstname} {this.state.lastname}! Add your friends below.</h5>
 
         <ul>
-        {this.state.friendships.map(item => (
-          <li key={item}>{item}</li>
-        ))}
-        </ul> 
+          {this.state.friendships.map(item => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
 
         <form onSubmit={this.handleAdd}>
-        <input
+          <input
             type='text'
             name='friendfirstname'
             value={this.state.friendfirstname}
             onChange={this.handleChange}
           />
-           <input
+          <input
             type='text'
             name='friendlastname'
             value={this.state.friendlastname}
             onChange={this.handleChange}
           />
-           <input
+          <input
             type='email'
             name='friendemail'
             value={this.state.friendemail}
             onChange={this.handleChange}
           />
-        <input type="submit" value="Add Friend" />
+          <input type='submit' value='Add Friend' />
         </form>
 
         <h5>Total Count</h5>
@@ -85,18 +89,6 @@ class AddFriend extends React.Component {
       </div>
     )
   }
-}
-
-// takes in data from axios.get and outputs array of friends
-function getfriends(res) {
-  const friends = res.data.rows
-  let flist = []
-  for (let i = 0; i < friends.length; i++) {
-    const fname = friends[i].friendfname.charAt(0).toUpperCase() + friends[i].friendfname.slice(1)
-    const lname = friends[i].friendlname.charAt(0).toUpperCase() + friends[i].friendlname.slice(1)
-    flist[i] = fname + " " + lname
-  }
-  return flist
 }
 
 export default AddFriend
