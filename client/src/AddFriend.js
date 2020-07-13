@@ -13,7 +13,7 @@ class AddFriend extends React.Component {
         friendlastname: 'Friends last name',
         friendemail: 'Friends email'
       }
-
+      
     }
 
     this.handleAdd = this.handleAdd.bind(this)
@@ -41,7 +41,7 @@ class AddFriend extends React.Component {
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
-
+ 
       })
     e.preventDefault()
   }
@@ -90,5 +90,7 @@ class AddFriend extends React.Component {
     )
   }
 }
+
+
 
 export default AddFriend

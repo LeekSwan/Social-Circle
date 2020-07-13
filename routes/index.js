@@ -82,20 +82,16 @@ async function emailAlreadyRegistered (email) {
     values: [email.toLowerCase()]
   }
   const result = await db.query(checkdup)
-  if (result.rows[0].count > 0) {
-    return true
-  } else {
-    return false
-  }
+  return(result.rows[0].count > 0) 
 }
 
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
   const getUserData = {
-    text: 'SELECT f.user1, users.firstname, users.lastname, f.user2, u.firstname AS friendfname, u.lastname As friendlname' +
-    'FROM users' +
-    'LEFT JOIN friendships AS f ON  f.user1 = users.id' +
-    'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
+    text: 'SELECT users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
+            'FROM users ' +
+            'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
+            'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
     values: [req.params.secret]
   }
   db.query(getUserData)
@@ -113,7 +109,7 @@ function formatUserData (res) {
   const userData = {}
   const friends = res.rows
   const flist = []
-  if (friends[0].user2 == null) {
+  if (friends[0].friendfname == null) {
     flist[0] = 'You currently have no friends'
   } else {
     for (let i = 0; i < friends.length; i++) {
