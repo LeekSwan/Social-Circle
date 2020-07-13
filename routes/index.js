@@ -42,6 +42,9 @@ router.get('/test-mail', function (req, res) {
 })
 
 // Route for login/adding new user
+// If request is missing parameters, returns 400
+// If request is for existing user, returns 409
+// Else, creates user and returns 201 along with user data
 router.post('/api/users', function (req, res) {
   const { firstname, lastname, email } = req.body
   const secret = uuidv4()
@@ -50,51 +53,87 @@ router.post('/api/users', function (req, res) {
     console.log('Input field empty')
     return res.status(400).send('Input field empty')
   }
-
   // Checks for duplicate
+  emailAlreadyRegistered(email)
+    .then(result => {
+      if (result) {
+        res.status(409).send({ message: 'exist' })
+      } else {
+        const insertUser = {
+          text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
+          values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
+        }
+        db.query(insertUser)
+          .then(result => {
+            res.send({ secret: secret })
+          })
+          .catch(err => {
+            res.status(500).json(err)
+          })
+      }
+    })
+})
+
+// Helper function for checking user duplicates using email
+// Goes through database and counts where email matches
+async function emailAlreadyRegistered (email) {
   const checkdup = {
     text: 'SELECT COUNT(email) FROM users WHERE email = $1',
     values: [email.toLowerCase()]
   }
-  db.query(checkdup)
-    .then(result => {
-      if (result.rows[0].count !== 0) {
-        res.status(240)
-      }
-    })
-
-  // Insert user data
-  const query = {
-    text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-    values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
-  }
-  db.query(query)
-    .then(result => {
-      res.send([firstname, lastname, email, secret])
-    })
-    .catch(err => {
-      res.status(400).json(err)
-    })
-})
+  const result = await db.query(checkdup)
+  return(result.rows[0].count > 0) 
+}
 
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
-  const query = {
-    text: 'Select * FROM users WHERE secret = $1',
+  const getUserData = {
+    text: 'SELECT users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
+            'FROM users ' +
+            'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
+            'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
     values: [req.params.secret]
   }
-  db.query(query)
+  db.query(getUserData)
     .then(results => {
-      res.send(results.rows)
+      res.send(formatUserData(results))
     })
     .catch(err => {
       res.status(404).json(err)
     })
 })
 
+// Helper function for /api/user/:secret
+// Takes in res data and formats it to user first name, user last name, friends list
+function formatUserData (res) {
+  const userData = {}
+  const friends = res.rows
+  const flist = []
+  if (friends[0].friendfname == null) {
+    flist[0] = 'You currently have no friends'
+  } else {
+    for (let i = 0; i < friends.length; i++) {
+      const fname = friends[i].friendfname.charAt(0).toUpperCase() + friends[i].friendfname.slice(1)
+      const lname = friends[i].friendlname.charAt(0).toUpperCase() + friends[i].friendlname.slice(1)
+      flist[i] = fname + ' ' + lname
+    }
+  }
+  userData.firstname = friends[0].firstname.charAt(0).toUpperCase() + friends[0].firstname.slice(1)
+  userData.lastname = friends[0].lastname.charAt(0).toUpperCase() + friends[0].lastname.slice(1)
+  userData.friendslist = flist
+  return userData
+}
+
 // Route for adding friends
 router.post('/api/friendships', function (req, res) {
   // const { firstname, lastname, email } = req.body
+
+  // check if duplicate
+
+  // add user to users table
+
+  // add friendship to friendship table (friender id, id of added friend)
+
 })
 
 module.exports = router

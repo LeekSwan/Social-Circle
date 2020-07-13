@@ -7,24 +7,47 @@ class AddFriend extends React.Component {
     this.state = {
       firstname: '',
       lastname: '',
-      friendships: []
+      friendships: [],
+      newFriend: {
+        friendfirstname: 'Friends first name',
+        friendlastname: 'Friends last name',
+        friendemail: 'Friends email'
+      }
+      
     }
+
+    this.handleAdd = this.handleAdd.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
-        const user = res.data[0]
         this.setState({
-          firstname: user.firstname,
-          lastname: user.lastname
+          firstname: res.data.firstname,
+          lastname: res.data.lastname,
+          friendships: res.data.friendslist
         })
       })
-    // Capitalize the name cause I forgot we passed everything into db as lowercase
   }
 
-  handleAdd () {
+  handleAdd (e) {
+    // check for empty inputs
+    // Add new user to users table
+    // Add friend relationship to friendships table
 
+    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+      return window.alert('Input field empty')
+    }
+    axios.post('/api/friendships', this.state)
+      .then(res => {
+ 
+      })
+    e.preventDefault()
+  }
+
+  handleChange (e) {
+    // handles changes to add friend inputs
   }
 
   render () {
@@ -33,10 +56,32 @@ class AddFriend extends React.Component {
         <h2>Social Circle</h2>
         <h5>Hi {this.state.firstname} {this.state.lastname}! Add your friends below.</h5>
 
-        <input type='AddFriend' value='Add Friend' />
+        <ul>
+          {this.state.friendships.map(item => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
 
         <form onSubmit={this.handleAdd}>
-          <input type='submit' value='Submit' />
+          <input
+            type='text'
+            name='friendfirstname'
+            value={this.state.friendfirstname}
+            onChange={this.handleChange}
+          />
+          <input
+            type='text'
+            name='friendlastname'
+            value={this.state.friendlastname}
+            onChange={this.handleChange}
+          />
+          <input
+            type='email'
+            name='friendemail'
+            value={this.state.friendemail}
+            onChange={this.handleChange}
+          />
+          <input type='submit' value='Add Friend' />
         </form>
 
         <h5>Total Count</h5>
@@ -45,5 +90,7 @@ class AddFriend extends React.Component {
     )
   }
 }
+
+
 
 export default AddFriend
