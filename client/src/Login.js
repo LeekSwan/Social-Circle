@@ -19,7 +19,6 @@ class Login extends React.Component {
     }
     axios.post('/api/users', this.state)
       .then(res => {
-        console.log(res.status)
         if (res.status === 409) {
           window.alert('You already have already created an account with this email! Please check your email to login.')
         }

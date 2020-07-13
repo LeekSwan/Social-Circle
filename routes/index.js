@@ -88,7 +88,7 @@ async function emailAlreadyRegistered (email) {
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
   const getUserData = {
-    text: 'SELECT users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
+    text: 'SELECT users.id, users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
             'FROM users ' +
             'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
             'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
@@ -96,6 +96,7 @@ router.get('/api/user/:secret', function (req, res) {
   }
   db.query(getUserData)
     .then(results => {
+      // console.log(formatUserData(results))
       res.send(formatUserData(results))
     })
     .catch(err => {
@@ -118,6 +119,7 @@ function formatUserData (res) {
       flist[i] = fname + ' ' + lname
     }
   }
+  userData.id = friends[0].id
   userData.firstname = friends[0].firstname.charAt(0).toUpperCase() + friends[0].firstname.slice(1)
   userData.lastname = friends[0].lastname.charAt(0).toUpperCase() + friends[0].lastname.slice(1)
   userData.friendslist = flist
@@ -126,13 +128,31 @@ function formatUserData (res) {
 
 // Route for adding friends
 router.post('/api/friendships', function (req, res) {
-  // const { firstname, lastname, email } = req.body
+  const {userid, friendfname, friendlname, friendemail } = req.body
+  const secret = uuidv4()
 
-  // check if duplicate
+  // Check if friend is already a user. If not, add as a new user. Return friend id
+  emailAlreadyRegistered(friendemail) 
+  .then(result => {
+    
 
-  // add user to users table
+
+  })
+
+  
+  // Check if user already has a friendship with this friend
 
   // add friendship to friendship table (friender id, id of added friend)
+  const addFriendship = {
+    text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
+    values: []
+  }
+  db.query(addFriendship)
+    .then(results => {
+
+    })
+
+
 
 })
 

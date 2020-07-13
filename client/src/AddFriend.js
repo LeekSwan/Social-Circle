@@ -5,15 +5,13 @@ class AddFriend extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      userid: 0,
       firstname: '',
       lastname: '',
       friendships: [],
-      newFriend: {
-        friendfirstname: 'Friends first name',
-        friendlastname: 'Friends last name',
-        friendemail: 'Friends email'
-      }
-      
+      friendfname: '',
+      friendlname: '',
+      friendemail: ''
     }
 
     this.handleAdd = this.handleAdd.bind(this)
@@ -24,6 +22,7 @@ class AddFriend extends React.Component {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
         this.setState({
+          userid: res.data.id,
           firstname: res.data.firstname,
           lastname: res.data.lastname,
           friendships: res.data.friendslist
@@ -33,14 +32,13 @@ class AddFriend extends React.Component {
 
   handleAdd (e) {
     // check for empty inputs
-    // Add new user to users table
-    // Add friend relationship to friendships table
-
-    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+    
+    if (!this.state.friendfname || !this.state.friendlname || !this.state.friendemail) {
       return window.alert('Input field empty')
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
+        console.log(this.state)
  
       })
     e.preventDefault()
@@ -48,13 +46,19 @@ class AddFriend extends React.Component {
 
   handleChange (e) {
     // handles changes to add friend inputs
+    const target = e.target
+    const value = target.value
+    const name = target.name
+    this.setState({
+      [name]: value
+    })
   }
 
   render () {
     return (
       <div>
         <h2>Social Circle</h2>
-        <h5>Hi {this.state.firstname} {this.state.lastname}! Add your friends below.</h5>
+        <h5>Hi ***{this.state.userid}*** {this.state.firstname} {this.state.lastname}! Add your friends below.</h5>
 
         <ul>
           {this.state.friendships.map(item => (
@@ -65,21 +69,21 @@ class AddFriend extends React.Component {
         <form onSubmit={this.handleAdd}>
           <input
             type='text'
-            name='friendfirstname'
-            value={this.state.friendfirstname}
+            name='friendfname'
             onChange={this.handleChange}
+            placeholder="Friends first name"
           />
           <input
             type='text'
-            name='friendlastname'
-            value={this.state.friendlastname}
+            name='friendlname'
             onChange={this.handleChange}
+            placeholder="Friends last name"
           />
           <input
             type='email'
             name='friendemail'
-            value={this.state.friendemail}
             onChange={this.handleChange}
+            placeholder="Friends email"
           />
           <input type='submit' value='Add Friend' />
         </form>
