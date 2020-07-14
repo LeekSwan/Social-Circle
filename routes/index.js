@@ -134,26 +134,53 @@ router.post('/api/friendships', function (req, res) {
   // Check if friend is already a user. If not, add as a new user. Return friend id
   emailAlreadyRegistered(friendemail) 
   .then(result => {
+    if (!result) {
+      // insert user into query
+
+
+    }
+
+    // get user id
+    // .then(result => {
+      // Check if user already has a friendship with this friend
+
+      // add friendship to friendship table (friender id, id of added friend)
+    //})
+  })
+  // Check if user already has a friendship with this friend
+
+  // add friendship to friendship table (friender id, id of added friend)
+})
+
+function addFriend(user1, user2) {
+  const ifFriendExists = {
+
+  }
+  db.query(ifFriendExists)
+  .then(results => {
+    if(friendexists) {
+
+
+    } else {
+      const addFriendship = {
+        text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
+        values: []
+      }
+      db.query(addFriendship)
+        .then(results => {
     
+        })
+
+    }
 
 
   })
 
+
+
+
   
-  // Check if user already has a friendship with this friend
+}
 
-  // add friendship to friendship table (friender id, id of added friend)
-  const addFriendship = {
-    text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
-    values: []
-  }
-  db.query(addFriendship)
-    .then(results => {
-
-    })
-
-
-
-})
 
 module.exports = router
