@@ -45,7 +45,7 @@ router.get('/test-mail', function (req, res) {
 // If request is missing parameters, returns 400
 // If request is for existing user, returns 409
 // Else, creates user and returns 201 along with user data
-router.post('/api/users', function (req, res) {
+router.post('/api/users', async function (req, res) {
   const { firstname, lastname, email } = req.body
   const secret = uuidv4()
 
@@ -54,24 +54,22 @@ router.post('/api/users', function (req, res) {
     return res.status(400).send('Input field empty')
   }
   // Checks for duplicate
-  emailAlreadyRegistered(email)
-    .then(result => {
-      if (result) {
-        res.status(409).send({ message: 'exist' })
-      } else {
-        const insertUser = {
-          text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
-          values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
-        }
-        db.query(insertUser)
-          .then(result => {
-            res.send({ secret: secret })
-          })
-          .catch(err => {
-            res.status(500).json(err)
-          })
-      }
-    })
+  const result = await emailAlreadyRegistered(email)
+  if (result) {
+    res.status(409).send({ message: 'exist' })
+  } else {
+    const insertUser = {
+      text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4)',
+      values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
+    }
+    db.query(insertUser)
+      .then(result => {
+        res.send({ secret: secret })
+      })
+      .catch(err => {
+        res.status(500).json(err)
+      })
+  }
 })
 
 // Helper function for checking user duplicates using email
@@ -127,60 +125,67 @@ function formatUserData (res) {
 }
 
 // Route for adding friends
-router.post('/api/friendships', function (req, res) {
+router.post('/api/friendships', async function (req, res) {
   const {userid, friendfname, friendlname, friendemail } = req.body
   const secret = uuidv4()
 
-  // Check if friend is already a user. If not, add as a new user. Return friend id
-  emailAlreadyRegistered(friendemail) 
-  .then(result => {
-    if (!result) {
-      // insert user into query
-
-
+  // Checks to see if friendee is already a user
+  result = await emailAlreadyRegistered(friendemail) 
+  if (!result) { //Friend is not a user, insert user into query and return user id
+    const insertUser = {
+      text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4) RETURNING id',
+      values: [friendfname.toLowerCase(), friendlname.toLowerCase(), friendemail.toLowerCase(), secret]
     }
+    db.query(insertUser)
+      .then(result => {
+        console.log(result.rows[0].id)
+        addFriend(userid, result.rows[0].id)
+        // send alert back to react
+      })
 
-    // get user id
-    // .then(result => {
-      // Check if user already has a friendship with this friend
-
-      // add friendship to friendship table (friender id, id of added friend)
-    //})
-  })
-  // Check if user already has a friendship with this friend
-
-  // add friendship to friendship table (friender id, id of added friend)
+  } else { //friend is already a user, check if friendship alreayd exists. If not, add friendship
+    const checkExistingFriendship = {
+      text: 'SELECT user1, u1.firstname, u1.email, user2, u2.firstname, u2.email FROM friendships ' +
+      'LEFT JOIN users as u1 ON  friendships.user1 = u1.id ' +
+      'LEFT JOIN users as u2 ON friendships.user2 = u2.id WHERE user1 = $1 AND u2.email = $2',
+      values: [userid, friendemail]
+    }
+    db.query(checkExistingFriendship)
+    .then(result => {
+      console.log(result.rows.length)
+      if (result.rows === undefined || result.rows.length == 0) {
+        // send alert back to react
+        
+        res.send(result)
+      } else {
+        // get friend user id from email
+        const getFriendId = {
+          text: 'SELECT user2 as id FROM friendships ' +
+          'LEFT JOIN users ON friendships.user2 = users.id WHERE users.email = $1 LIMIT 1',
+          values: [friendemail]
+        }
+        db.query(getFriendId)
+        .then(result => {
+          addFriend(userid, result.rows[0].id)
+          // send data and alert back to react
+        })
+      }
+    })
+  }
 })
 
+// Helper function for /api/friendships to add friends
 function addFriend(user1, user2) {
-  const ifFriendExists = {
-
+  const addFriendship = {
+    text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) ',
+    values: [user1, user2]
   }
-  db.query(ifFriendExists)
-  .then(results => {
-    if(friendexists) {
+  db.query(addFriendship)
+    .then(results => {
 
-
-    } else {
-      const addFriendship = {
-        text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
-        values: []
-      }
-      db.query(addFriendship)
-        .then(results => {
-    
-        })
-
-    }
-
-
-  })
-
-
-
-
-  
+    })
 }
+  
 
 
 module.exports = router
