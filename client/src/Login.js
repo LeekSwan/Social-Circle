@@ -19,15 +19,17 @@ class Login extends React.Component {
     }
     axios.post('/api/users', this.state)
       .then(res => {
-        if (res.status === 409) {
-          window.alert('You already have already created an account with this email! Please check your email to login.')
-        } else if (res.status >= 200) {
+        if (res.status >= 200 && res.status < 300) {
           this.props.history.push({ pathname: '/user/' + res.data.secret })
         } else {
           console.log('it failed m8')
         }
       })
-
+      .catch(err => {
+        if (err.response.status === 409) {
+          window.alert('You already have already created an account with this email! Please check your email to login.')
+        }
+      })
     e.preventDefault()
   }
 

@@ -47,7 +47,7 @@ router.get('/test-mail', function (req, res) {
 // Route for login/adding new user
 // If request is missing parameters, returns 400
 // If request is for existing user, returns 409
-// Else, creates user and returns 201 along with user data
+// Else, creates user and returns 201 along with user secret
 router.post('/api/users', async function (req, res) {
   const { firstname, lastname, email } = req.body
   const secret = uuidv4()
@@ -59,7 +59,7 @@ router.post('/api/users', async function (req, res) {
 
   const result = await que.emailAlreadyRegistered(email)
   if (result) {
-    res.status(409).send({ message: 'exist' })
+    res.status(409).send()
   } else {
     que.addUser(firstname, lastname, email, secret)
       .then(() => {
@@ -103,7 +103,7 @@ router.post('/api/friendships', async function (req, res) {
     const friendshipExists = await que.checkFriendshipExists(userid, friendemail)
     if (friendshipExists) {
       console.log('friendship exists')
-      return res.status(409)
+      return res.status(409).send()
     }
   }
 

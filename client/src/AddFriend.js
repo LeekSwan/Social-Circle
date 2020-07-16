@@ -39,14 +39,17 @@ class AddFriend extends React.Component {
     axios.post('/api/friendships', this.state)
 
       .then(res => {
-        if (res.status === 409) {
-          window.alert('You are already friends with this person')
-        } else if (res.status >= 200) {
+        if (res.status >= 200) {
           window.alert('You are now friends with ' + this.state.friendfname + ' ' + this.state.friendlname)
           this.setState(state => {
             const friendships = state.friendships.concat(state.friendfname + ' ' + state.friendlname)
             return { friendships }
           })
+        }
+      })
+      .catch(err => {
+        if (err.response.status === 409) {
+          window.alert('You are already friends with this person')
         }
       })
     e.preventDefault()
