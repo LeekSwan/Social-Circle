@@ -141,6 +141,9 @@ router.post('/api/friendships', async function (req, res) {
         addFriend(userid, result.rows[0].id)
         res.status(200).send()
       })
+      .catch(err => {
+        res.status(500).json(err)
+      })
   } else { // friend is already a user, check if friendship alreayd exists. If not, add friendship
     const checkExistingFriendship = {
       text: 'SELECT user1, u1.firstname, u1.email, user2, u2.firstname, u2.email FROM friendships ' +
@@ -162,7 +165,13 @@ router.post('/api/friendships', async function (req, res) {
               addFriend(userid, result.rows[0].id)
               res.status(200).send()
             })
+            .catch(err => {
+              res.status(500).json(err)
+            })
         }
+      })
+      .catch(err => {
+        res.status(500).json(err)
       })
   }
 })
