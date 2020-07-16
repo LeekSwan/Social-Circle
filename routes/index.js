@@ -80,7 +80,7 @@ async function emailAlreadyRegistered (email) {
     values: [email.toLowerCase()]
   }
   const result = await db.query(checkdup)
-  return(result.rows[0].count > 0) 
+  return (result.rows[0].count > 0)
 }
 
 // Route for getting user data from secret
@@ -126,24 +126,22 @@ function formatUserData (res) {
 
 // Route for adding friends
 router.post('/api/friendships', async function (req, res) {
-  const {userid, friendfname, friendlname, friendemail } = req.body
+  const { userid, friendfname, friendlname, friendemail } = req.body
   const secret = uuidv4()
 
   // Checks to see if friendee is already a user
-  result = await emailAlreadyRegistered(friendemail) 
-  if (!result) { //Friend is not a user, insert user into query and return user id
+  const result = await emailAlreadyRegistered(friendemail)
+  if (!result) { // Friend is not a user, insert user into query and return user id
     const insertUser = {
       text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4) RETURNING id',
       values: [friendfname.toLowerCase(), friendlname.toLowerCase(), friendemail.toLowerCase(), secret]
     }
     db.query(insertUser)
       .then(result => {
-        console.log(result.rows[0].id)
         addFriend(userid, result.rows[0].id)
-        // send alert back to react
+        res.status(200).send()
       })
-
-  } else { //friend is already a user, check if friendship alreayd exists. If not, add friendship
+  } else { // friend is already a user, check if friendship alreayd exists. If not, add friendship
     const checkExistingFriendship = {
       text: 'SELECT user1, u1.firstname, u1.email, user2, u2.firstname, u2.email FROM friendships ' +
       'LEFT JOIN users as u1 ON  friendships.user1 = u1.id ' +
@@ -151,41 +149,31 @@ router.post('/api/friendships', async function (req, res) {
       values: [userid, friendemail]
     }
     db.query(checkExistingFriendship)
-    .then(result => {
-      console.log(result.rows.length)
-      if (result.rows === undefined || result.rows.length == 0) {
-        // send alert back to react
-        
-        res.send(result)
-      } else {
-        // get friend user id from email
-        const getFriendId = {
-          text: 'SELECT user2 as id FROM friendships ' +
-          'LEFT JOIN users ON friendships.user2 = users.id WHERE users.email = $1 LIMIT 1',
-          values: [friendemail]
+      .then(result => {
+        if (result.rows.length !== 0) { // If length of rows  != 0, that means there is an existing friendship between 2 users
+          res.status(409).send() // I still cant read message after a 409 error should I maybe use a
+        } else {
+          const getFriendId = { // gets friend user id from email
+            text: 'SELECT id FROM users WHERE users.email = $1',
+            values: [friendemail]
+          }
+          db.query(getFriendId)
+            .then(result => {
+              addFriend(userid, result.rows[0].id)
+              res.status(200).send()
+            })
         }
-        db.query(getFriendId)
-        .then(result => {
-          addFriend(userid, result.rows[0].id)
-          // send data and alert back to react
-        })
-      }
-    })
+      })
   }
 })
 
 // Helper function for /api/friendships to add friends
-function addFriend(user1, user2) {
+function addFriend (user1, user2) {
   const addFriendship = {
     text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) ',
     values: [user1, user2]
   }
   db.query(addFriendship)
-    .then(results => {
-
-    })
 }
-  
-
 
 module.exports = router
