@@ -1,5 +1,7 @@
 import React from 'react'
 import axios from 'axios'
+import { Button, Spinner} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class AddFriend extends React.Component {
   constructor (props) {
@@ -11,7 +13,8 @@ class AddFriend extends React.Component {
       friendships: [],
       friendfname: '',
       friendlname: '',
-      friendemail: ''
+      friendemail: '',
+      isloading: false
     }
 
     this.handleAdd = this.handleAdd.bind(this)
@@ -32,12 +35,11 @@ class AddFriend extends React.Component {
 
   handleAdd (e) {
     // check for empty inputs
-
+    this.setState({isloading: true})
     if (!this.state.friendfname || !this.state.friendlname || !this.state.friendemail) {
       return window.alert('Input field empty')
     }
     axios.post('/api/friendships', this.state)
-
       .then(res => {
         if (res.status >= 200) {
           window.alert('You are now friends with ' + this.state.friendfname + ' ' + this.state.friendlname)
@@ -46,11 +48,13 @@ class AddFriend extends React.Component {
             return { friendships }
           })
         }
+        this.setState({isloading: false})
       })
       .catch(err => {
         if (err.response.status === 409) {
           window.alert('You are already friends with this person')
         }
+        this.setState({isloading: false})
       })
     e.preventDefault()
     e.target.reset()
@@ -66,7 +70,9 @@ class AddFriend extends React.Component {
     })
   }
 
+
   render () {
+
     return (
       <div>
         <h2>Social Circle</h2>
@@ -97,14 +103,40 @@ class AddFriend extends React.Component {
             onChange={this.handleChange}
             placeholder='Friends email'
           />
-          <input type='submit' value='Add Friend' />
+          {!this.state.isloading && submitButton()}
+          {this.state.isloading && loadButton()}
         </form>
-
+            
         <h5>Total Count</h5>
         <h5>0</h5>
       </div>
     )
   }
 }
+
+function loadButton() {
+  return (
+    <>
+  <Button variant="secondary" disabled>
+    <Spinner
+      as="span"
+      animation="border"
+      size="sm"
+      role="status"
+      aria-hidden="true"
+    />
+    Loading...
+  </Button>
+</>
+  
+  );
+}
+function submitButton() {
+  return (
+    <input type='submit' value='Add Friend' />
+  )
+}
+
+
 
 export default AddFriend
