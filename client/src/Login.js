@@ -19,6 +19,7 @@ class Login extends React.Component {
     }
     axios.post('/api/users', this.state)
       .then(res => {
+        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.props.history.push({ pathname: '/user/' + res.data.secret })
         } else {

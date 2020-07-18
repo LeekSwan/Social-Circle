@@ -10,7 +10,7 @@ class AddFriend extends React.Component {
       userId: 0,
       firstName: '',
       lastName: '',
-      friendShips: [],
+      friendships: [],
       friendFName: '',
       friendLName: '',
       friendEmail: '',
@@ -29,7 +29,7 @@ class AddFriend extends React.Component {
           userId: res.data.id,
           firstName: res.data.firstname,
           lastName: res.data.lastname,
-          friendShips: res.data.friendslist
+          friendships: res.data.friendslist
         })
       })
   }
@@ -38,23 +38,22 @@ class AddFriend extends React.Component {
     // check for empty inputs
     this.setState({ isLoading: true })
     if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
-      return window.alert('Input field empty')
+      return this.setState({ status: 406 })
     }
-    axios.post('/api/friendShips', this.state)
+    axios.post('/api/friendships', this.state)
       .then(res => {
+        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
-          // window.alert('You are now friends with ' + this.state.friendFName + ' ' + this.state.friendLName)
           this.setState(state => {
-            const friendShips = state.friendShips.concat(state.friendFName + ' ' + state.friendLName)
+            const friendships = state.friendships.concat(state.friendFName + ' ' + state.friendLName)
             const status = 201
-            return { friendShips, status }
+            return { friendships, status }
           })
         }
         this.setState({ isLoading: false })
       })
       .catch(err => {
         if (err.response.status === 409) {
-          // window.alert('You are already friends with this person')
           this.setState({ status: 409 })
         }
         this.setState({ isLoading: false })
@@ -84,7 +83,7 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-          {this.state.friendShips.map(item => (
+          {this.state.friendships.map(item => (
             <li key={item}>{item}</li>
           ))}
         </ul>
@@ -108,13 +107,12 @@ class AddFriend extends React.Component {
             onChange={this.handleChange}
             placeholder='Friends email'
           />
-        { this.state.isLoading ?  loadButton() : submitButton() }
+          {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
         <div>
-          {displayAlert(this.state.status)}
+          {displayAlert(this.state)}
         </div>
-        
 
         <h5>Total Count</h5>
         <h5>0</h5>
@@ -138,7 +136,6 @@ function loadButton () {
       </Button>
     </>
 
-
   )
 }
 function submitButton () {
@@ -147,20 +144,35 @@ function submitButton () {
   )
 }
 
-function displayAlert (status) {
-  if (status === 409) {
+// // Helper function to set alert timer
+// function alertTimer (status) {
+//   this.setState({status: status},()=>{
+//     window.setTimeout(()=>{
+//       this.setState({status: status})
+//     },2000)
+//   });
+// }
+
+// TODO: Set a 2 second timer to display alert before it disapears
+function displayAlert (state) {
+  if (state.status === 409) {
     return (
       <Alert variant='danger'>
-      This is a danger alert—check it out!
+      You are already friends with this person.
       </Alert>
     )
-  } else if (status === 201) {
+  } else if (state.status === 406) {
+    return (
+      <Alert variant='warning'>
+      Please fill all fields.
+      </Alert>
+    )
+  } else if (state.status === 201) {
     return (
       <Alert variant='success'>
-      This is a danger alert—check it out!
+      You are now friends with {state.friendFName} {state.friendLName}
       </Alert>
     )
-
   }
 }
 

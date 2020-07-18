@@ -25,11 +25,11 @@ module.exports = {
   getUserBySecret: async function (secret) {
     const getUserData = {
       text: 'SELECT users.id, users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
-            'FROM users ' +
-            'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
-            'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
+      'FROM users ' +
+      'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
+      'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
       values: [secret]
-  	}
+    }
     return db.query(getUserData)
   },
 
@@ -71,6 +71,11 @@ module.exports = {
 
   // remove all of a users friendships
   removeAllFriendships: function (userSecret) {
+
+  },
+
+  // removes specific friendship from users friendships
+  removeFriendship: function (userId, friendId) {
 
   }
 

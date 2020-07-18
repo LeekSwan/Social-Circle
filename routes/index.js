@@ -81,6 +81,7 @@ router.get('/api/user/:secret', function (req, res) {
     })
 })
 
+// TODO: check if friend added is the user itself
 router.post('/api/friendships', async function (req, res) {
   const { userId, friendFName, friendLName, friendEmail } = req.body
   const secret = uuidv4()
