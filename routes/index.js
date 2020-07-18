@@ -6,7 +6,6 @@ const bodyParser = require('body-parser')
 const { v4: uuidv4 } = require('uuid')
 const que = require('./queries')
 const pro = require('./dataprocess.js')
-const { addUser } = require('./queries')
 router.use(bodyParser.json())
 
 router.get('/test', function (req, res) {
@@ -49,21 +48,21 @@ router.get('/test-mail', function (req, res) {
 // If request is for existing user, returns 409
 // Else, creates user and returns 201 along with user secret
 router.post('/api/users', async function (req, res) {
-  const { firstname, lastname, email } = req.body
+  const { firstName, lastName, email } = req.body
   const secret = uuidv4()
 
-  if (!firstname || !lastname || !email) {
+  if (!firstName || !lastName || !email) {
     console.log('Input field empty')
     return res.status(400).send('Input field empty')
   }
 
-  const result = await que.emailAlreadyRegistered(email)
-  if (result) {
+  const emailRegistered = await que.emailAlreadyRegistered(email)
+  if (emailRegistered) {
     res.status(409).send()
   } else {
-    que.addUser(firstname, lastname, email, secret)
+    que.addUser(firstName, lastName, email, secret)
       .then(() => {
-        res.send({ secret: secret })
+        res.status(201).send({ secret: secret })
       })
       .catch(err => {
         res.status(500).json(err)
@@ -73,7 +72,7 @@ router.post('/api/users', async function (req, res) {
 
 // Route for getting user data from secret
 router.get('/api/user/:secret', function (req, res) {
-  que.getUserData(req.params.secret)
+  que.getUserBySecret(req.params.secret)
     .then(results => {
       res.send(pro.formatUserData(results))
     })
@@ -83,34 +82,38 @@ router.get('/api/user/:secret', function (req, res) {
 })
 
 router.post('/api/friendships', async function (req, res) {
-  const { userid, friendfname, friendlname, friendemail } = req.body
+  const { userId, friendFName, friendLName, friendEmail } = req.body
   const secret = uuidv4()
 
   // Get user Id
   let friendId
-  const userExists = await que.emailAlreadyRegistered(friendemail)
+  const userExists = await que.emailAlreadyRegistered(friendEmail)
   if (userExists) {
-    friendId = await que.getUserId(friendemail)
+    friendId = await que.getUserIdByEmail(friendEmail)
   } else {
-    friendId = await que.addUser(friendfname, friendlname, friendemail, secret)
+    friendId = await que.addUser(friendFName, friendLName, friendEmail, secret)
   }
-    
+
   // Add friend
   if (userExists) {
-    const friendshipExists = await que.checkFriendshipExists(userid, friendemail)
+    const friendshipExists = await que.checkFriendshipExists(userId, friendEmail)
     if (friendshipExists) {
-      console.log('friendship exists')
       return res.status(409).send()
     }
   }
 
-  que.addFriend(userid, friendId.rows[0].id)
-  .then(() => {       
-    res.status(201).send()
-  })
-  .catch(err => {
-    res.status(500).json(err)
-  })
+  que.addFriend(userId, friendId.rows[0].id)
+    .then(() => {
+      res.status(201).send()
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
+
+// Route for deleting user accounts and friendships
+router.delete('/api/delete', function (req, res) {
+
 })
 
 module.exports = router
