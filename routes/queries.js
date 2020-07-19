@@ -56,27 +56,32 @@ module.exports = {
   },
 
   // Helper function for /api/friendships to add friends to friendships db
-  addFriend: function (user1, user2) {
+  addFriend: async function (user1, user2) {
     const addFriendship = {
-      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) ',
+      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
       values: [user1, user2]
     }
     return db.query(addFriendship)
   },
 
-  // delete user account
-  deleteUser: function (userSecret) {
-
-  },
-
-  // remove all of a users friendships
-  removeAllFriendships: function (userSecret) {
-
+  // delete user account and all existing friendships
+  deleteUserAndFriendships: async function (userSecret) {
+		const deleteUserAndFriendships = {
+			text: 'DELETE FROM users USING users as u ' +
+			'LEFT JOIN friendships AS f ON  f.user1 = u.id ' +
+			'LEFT JOIN users as u1 ON f.user2 = u.id WHERE users.secret = $1',
+			values: {userSecret}
+		}
+		return dq.query(deleteUserAndFriendships)
   },
 
   // removes specific friendship from users friendships
   removeFriendship: function (userId, friendId) {
-
+		const deleteFriendship = {
+			text: 'DELETE FROM friendships WHERE user1 = $1 AND user2 = $2',
+			values: {userId, friendId}
+		}
+		return db.query(deleteFriendship)
   }
 
 }

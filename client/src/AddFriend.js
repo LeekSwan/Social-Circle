@@ -42,7 +42,6 @@ class AddFriend extends React.Component {
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
-        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState(state => {
             const friendships = state.friendships.concat(state.friendFName + ' ' + state.friendLName)
