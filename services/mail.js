@@ -1,6 +1,6 @@
 const mailClient = require('../mail/sendgrid.js')
 
-async function sendTestEmailToMyself(myPersonalEmail) {
+async function sendTestEmailToMyself (myPersonalEmail) {
   const msg = {
     to: myPersonalEmail,
     from: myPersonalEmail,

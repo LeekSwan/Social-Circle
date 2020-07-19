@@ -3,12 +3,12 @@ const UserModel = require('../models/users')
 const { v4: uuidv4 } = require('uuid')
 
 // Helper function
-async function checkEmailAlreadyRegistered(email) {
+async function checkEmailAlreadyRegistered (email) {
   const count = await UserModel.countEmail(email)
   return (count > 0)
 }
 
-async function signup(firstName, lastName, email) {
+async function signup (firstName, lastName, email) {
   const emailRegistered = checkEmailAlreadyRegistered(email)
   if (emailRegistered) {
     throw new Error('emailRegistered')
@@ -19,13 +19,13 @@ async function signup(firstName, lastName, email) {
   return secret
 }
 
-async function login(secret) {
+async function login (secret) {
   // TODO: throw error when secret is unrecognized
   return UserModel.getUserBySecret(secret)
 }
 
 // TODO: refactor this so it makes more sense
-async function addFriend(userId, friendFName, friendLName, friendEmail) {
+async function addFriend (userId, friendFName, friendLName, friendEmail) {
   // Get userId of friend
   let friendId
   const userExists = await this.checkEmailAlreadyRegistered(friendEmail)
@@ -33,8 +33,9 @@ async function addFriend(userId, friendFName, friendLName, friendEmail) {
     friendId = await UserModel.getUserIdByEmail(friendEmail)
   } else {
     const secret = uuidv4()
-    let { friendId } = await UserModel.create(friendFName, friendLName, friendEmail, secret)
+    const { friendId } = await UserModel.create(friendFName, friendLName, friendEmail, secret)
     // TODO: send invitation email
+    return friendId
   }
 
   // Add friend
@@ -47,7 +48,7 @@ async function addFriend(userId, friendFName, friendLName, friendEmail) {
   return UserModel.addFriend(userId, friendId)
 }
 
-async function test() {
+async function test () {
   return UserModel.getUsers()
 }
 
