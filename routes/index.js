@@ -113,8 +113,12 @@ router.post('/api/friendships', async function (req, res) {
 })
 
 // Route for deleting user accounts and friendships
-router.delete('/api/delete/user', function (req, res) {
-  const {secret} = req.body
+router.delete('/api/delete/user/:secret', function (req, res) {
+  console.log(req.params.secret)
+  que.deleteUserAndFriendships(req.params.secret)
+    .then(() => {
+      res.status(200).send()
+    })
 })
 
 // Route for deleting specific friendships from users account

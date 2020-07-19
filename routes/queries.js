@@ -70,9 +70,9 @@ module.exports = {
 			text: 'DELETE FROM users USING users as u ' +
 			'LEFT JOIN friendships AS f ON  f.user1 = u.id ' +
 			'LEFT JOIN users as u1 ON f.user2 = u.id WHERE users.secret = $1',
-			values: {userSecret}
+			values: [userSecret]
 		}
-		return dq.query(deleteUserAndFriendships)
+		return db.query(deleteUserAndFriendships)
   },
 
   // removes specific friendship from users friendships

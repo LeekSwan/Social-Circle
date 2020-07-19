@@ -15,11 +15,13 @@ class AddFriend extends React.Component {
       friendLName: '',
       friendEmail: '',
       isLoading: false,
+      isDelete: false,
       status: 0
     }
 
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentDidMount () {
@@ -40,7 +42,7 @@ class AddFriend extends React.Component {
     if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
       return this.setState({ status: 406 })
     }
-    axios.post('/api/friendships', this.state)
+    axios.post(`/api/friendships`, this.state)
       .then(res => {
         if (res.status >= 200 && res.status < 300) {
           this.setState(state => {
@@ -62,8 +64,15 @@ class AddFriend extends React.Component {
   }
 
   handleDelete (e) {
-    axios.delete('/api/delete', this.state)
+    axios.delete(`/api/delete${this.props.location.pathname}`)
+    .then(res => {
+      if (res.status >= 200 && res.status < 300) {
+        this.setState({ status: 203 })
+        this.props.history.push({ pathname: '/user/'})
+      }
+    })
   }
+
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -115,6 +124,11 @@ class AddFriend extends React.Component {
 
         <h5>Total Count</h5>
         <h5>0</h5>
+
+        <form onSubmit={this.handleDelete}>
+          <input type='submit' value='Delete Account' />
+        </form>
+
       </div>
     )
   }
@@ -169,10 +183,17 @@ function displayAlert (state) {
   } else if (state.status === 201) {
     return (
       <Alert variant='success'>
-      You are now friends with {state.friendFName} {state.friendLName}
+      You are now friends with {state.friendFName} {state.friendLName}.
+      </Alert>
+    )
+  } else if (state.status === 203) {
+    return (
+      <Alert variant='info'>
+      Your account has been deleted.
       </Alert>
     )
   }
 }
+
 
 export default AddFriend
