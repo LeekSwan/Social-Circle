@@ -5,8 +5,8 @@ class Login extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      firstname: '',
-      lastname: '',
+      firstName: '',
+      lastName: '',
       email: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -14,22 +14,23 @@ class Login extends React.Component {
   }
 
   handleSubmit (e) {
-    if (!this.state.firstname || !this.state.lastname || !this.state.email) {
+    if (!this.state.firstName || !this.state.lastName || !this.state.email) {
       return window.alert('Input field empty')
     }
     axios.post('/api/users', this.state)
       .then(res => {
-        console.log(res.status)
-        if (res.status === 409) {
-          window.alert('You already have already created an account with this email! Please check your email to login.')
-        }
-        else if (res.status >= 200) {
+        console.log('got to axios.post')
+        if (res.status >= 200 && res.status < 300) {
           this.props.history.push({ pathname: '/user/' + res.data.secret })
         } else {
           console.log('it failed m8')
         }
       })
-
+      .catch(err => {
+        if (err.response.status === 409) {
+          window.alert('You have already created an account with this email! Please check your email to login.')
+        }
+      })
     e.preventDefault()
   }
 
@@ -49,16 +50,16 @@ class Login extends React.Component {
         <h2>Social Circle or whatever the name is</h2>
         <h5>Some sort of explanation for how the app works</h5>
         <form onSubmit={this.handleSubmit}>
-          <p>Firstname:</p>
+          <p>firstName:</p>
           <input
             type='text'
-            name='firstname'
+            name='firstName'
             onChange={this.handleChange}
           />
-          <p>Lastname:</p>
+          <p>lastName:</p>
           <input
             type='text'
-            name='lastname'
+            name='lastName'
             onChange={this.handleChange}
           />
           <p>Email:</p>
