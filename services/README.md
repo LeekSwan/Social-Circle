@@ -1,5 +1,6 @@
 # Services
 
+* Service functions correspond to user actions or API requests.
 * Contains all business logic.
 * Does not "know" anything about the data layer -- simply calls functions provided by the `models` interface.
   * never imports DB dependencies

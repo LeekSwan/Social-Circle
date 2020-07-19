@@ -1,27 +1,32 @@
 const db = require('../db')
+
 module.exports = {
 
   // Adds user to users db
-  addUser: async function (firstname, lastname, email, secret) {
+  // Returns ID of created user
+  create: async function (firstname, lastname, email, secret) {
     const insertUser = {
       text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4) RETURNING id',
       values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
     }
-    return db.query(insertUser)
+    return db.query(insertUser).rows[0].id
   },
 
   // Checks for duplicate users with same email
   // Goes through database and counts where email matches. Returns true if user is alreayd registered
-  emailAlreadyRegistered: async function (email) {
+  countEmail: async function (email) {
     const checkdup = {
       text: 'SELECT COUNT(email) FROM users WHERE email = $1',
       values: [email.toLowerCase()]
     }
     const result = await db.query(checkdup)
-    return (result.rows[0].count > 0)
+    return result.rows[0].count
   },
 
   // Get user data from secret
+  // TODO: separate this function into 2 different functions
+  // - getUserBySecret
+  // - getFriendsById
   getUserBySecret: async function (secret) {
     const getUserData = {
       text: 'SELECT users.id, users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
@@ -30,7 +35,29 @@ module.exports = {
       'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
       values: [secret]
     }
-    return db.query(getUserData)
+    const res = await db.query(getUserData)
+    const friends = res.rows
+    const capitalized = (name) => {
+      return name.charAt(0).toUpperCase() + name.slice(1)
+    }
+    // populate friendsList
+    const flist = []
+    if (friends[0].friendfname == null) {
+      flist[0] = 'You currently have no friends'
+    } else {
+      for (let i = 0; i < friends.length; i++) {
+        const fname = capitalized(friends[i].friendfname)
+        const lname = capitalized(friends[i].friendlname)
+        flist[i] = fname + ' ' + lname
+      }
+    }
+    // TODO: camelCase this return
+    return {
+      id: friends[0].id,
+      firstname: capitalized(friends[0].firstname),
+      lastname: capitalized(friends[0].lastname),
+      friendslist: flist
+    }
   },
 
   // Get user id from email
@@ -39,7 +66,9 @@ module.exports = {
       text: 'SELECT id FROM users WHERE users.email = $1',
       values: [friendemail]
     }
-    return db.query(getFriendId)
+    // TODO: Return null if doesn't exist
+    const result = await db.query(getFriendId)
+    return result.rows[0].id
   },
 
   // Goes through and see if there are any db entries that match the user and email.
@@ -77,6 +106,10 @@ module.exports = {
   // removes specific friendship from users friendships
   removeFriendship: function (userId, friendId) {
 
-  }
+  },
 
+  getUsers: function () {
+    const query = 'Select * from users'
+    return db.query(query).then(result => result.rows)
+  }
 }
