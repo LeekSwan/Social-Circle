@@ -12,6 +12,8 @@ if (process.env.NODE_ENV === 'dev') {
 const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
+const indexRouter = require('./routes/index.js')
+const apiRouter = require('./routes/api.js')
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -23,7 +25,7 @@ app.use(morgan('dev'))
 app.use(express.static(path.join(__dirname, 'client/build')))
 
 // Serve the express routes
-const indexRouter = require('./routes/index.js')
+app.use('/api', apiRouter) // Forward all /api/... routes to apiRouter
 app.use('/', indexRouter)
 
 // Handles any requests that don't match the ones above
