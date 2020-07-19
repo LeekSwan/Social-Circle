@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const mailClient = require('../mail/index.js')
-const bodyParser = require('body-parser')
 const UserService = require('../services/users')
+const MailService = require('../services/mail')
+const bodyParser = require('body-parser')
 router.use(bodyParser.json())
 
 router.get('/test', function (req, res) {
@@ -16,16 +16,13 @@ router.get('/test-db', async function (req, res) {
 })
 
 router.get('/test-mail', function (req, res) {
-  console.log('GET /test-mail')
-  const msg = {
-    to: 'jasonyu6154@gmail.com',
-    from: 'jasonyu6154@gmail.com',
-    subject: 'Sending with Twilio SendGrid is Fun',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>'
+  const myEmail = ''
+  let sendEmail = false
+  // sendEmail = true
+  if (!sendEmail) {
+    return res.send('sendEmail must be turned on manually')
   }
-  mailClient
-    .send(msg)
+  MailService.sendTestEmailToMyself(myEmail)
     .then(() => {
       console.log('sent test message without errors')
       res.status(202).send('ok sent')
