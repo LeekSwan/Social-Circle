@@ -2,12 +2,17 @@ const UserModel = require('../models/users')
 
 const { v4: uuidv4 } = require('uuid')
 
+// Helper function
 async function checkEmailAlreadyRegistered(email) {
   const count = await UserModel.countEmail(email)
   return (count > 0)
 }
 
 async function signup(firstName, lastName, email) {
+  const emailRegistered = checkEmailAlreadyRegistered(email)
+  if (emailRegistered) {
+    throw new Error('emailRegistered')
+  }
   const secret = uuidv4()
   UserModel.create(firstName, lastName, email, secret)
   // TODO: send email on signup
@@ -47,7 +52,6 @@ async function test() {
 }
 
 module.exports = {
-  checkEmailAlreadyRegistered,
   signup,
   login,
   addFriend,

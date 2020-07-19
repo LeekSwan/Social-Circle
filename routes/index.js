@@ -41,25 +41,21 @@ router.get('/test-mail', function (req, res) {
 // Else, creates user and returns 201 along with user secret
 router.post('/api/users', async function (req, res) {
   const { firstName, lastName, email } = req.body
-
   if (!firstName || !lastName || !email) {
     console.log('Input field empty')
     return res.status(400).send('Input field empty')
   }
-
-  const emailRegistered = await UserService.checkEmailAlreadyRegistered(email)
-  if (emailRegistered) {
-    res.status(409).send()
-  } else {
-    UserService.signup(firstName, lastName, email)
-      .then((secret) => {
-        res.status(201).send({ secret: secret })
-      })
-      .catch(err => {
-        console.log(err)
-        res.status(500).json(err)
-      })
-  }
+  UserService.signup(firstName, lastName, email)
+    .then((secret) => {
+      res.status(201).send({ secret: secret })
+    })
+    .catch(err => {
+      if (err.message === 'emailRegistered') {
+        return res.status(409).send()
+      }
+      console.log(err)
+      return res.status(500).json(err)
+    })
 })
 
 // Route for getting user data from secret
@@ -87,7 +83,7 @@ router.post('/api/friendships', async function (req, res) {
         return res.status(409).send()
       }
       console.log(err)
-      res.status(500).json(err)
+      return res.status(500).json(err)
     })
 })
 
