@@ -25,12 +25,15 @@ class AddFriend extends React.Component {
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
+        console.log(res)
         this.setState({
           userId: res.data.id,
           firstName: res.data.firstname,
           lastName: res.data.lastname,
           friendships: res.data.friendslist
         })
+      }).catch(err => {
+        console.log(err)
       })
   }
 
@@ -57,6 +60,7 @@ class AddFriend extends React.Component {
           this.setState({ status: 409 })
         }
         this.setState({ isLoading: false })
+        console.log(err)
       })
     e.preventDefault()
     e.target.reset()
