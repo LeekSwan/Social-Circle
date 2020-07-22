@@ -62,13 +62,23 @@ module.exports = {
   },
 
   // Get user id from email
-  getUserIdByEmail: async function (friendemail) {
-    const getFriendId = {
+  getUserIdByEmail: async function (email) {
+    const getUserId = {
       text: 'SELECT id FROM users WHERE users.email = $1',
-      values: [friendemail]
+      values: [email]
     }
     // TODO: Return null if doesn't exist
-    const result = await db.query(getFriendId)
+    const result = await db.query(getUserId)
+    return result.rows[0].id
+  },
+
+  getUserIdBySecret: async function (secret) {
+    const getUserId = {
+      text: 'SELECT id FROM users WHERE users.secret = $1',
+      values: [secret]
+    }
+    // TODO: Return null if doesn't exist
+    const result = await db.query(getUserId)
     return result.rows[0].id
   },
 
@@ -112,5 +122,18 @@ module.exports = {
   getUsers: function () {
     const query = 'Select * from users'
     return db.query(query).then(result => result.rows)
+  },
+
+  getFriendsById: async function (userId) {
+    // query the DB
+    const getFriends = {
+      text: 'SELECT user2 FROM friendships WHERE user1 = $1',
+      values: [userId]
+    }
+    const res = await db.query(getFriends)
+    // transform res.rows
+    // FROM:  [ { user2: 123}, { user2: 456}, ... ]
+    // TO:    [ 123, 456 ]
+    return res.rows.map( row => row.user2 )
   }
 }

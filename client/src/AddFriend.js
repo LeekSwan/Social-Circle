@@ -3,6 +3,8 @@ import axios from 'axios'
 import { Button, Spinner, Alert } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import CountDisplay from './CountDisplay'
+
 class AddFriend extends React.Component {
   constructor (props) {
     super(props)
@@ -118,8 +120,7 @@ class AddFriend extends React.Component {
           {displayAlert(this.state)}
         </div>
 
-        <h5>Total Count</h5>
-        <h5>0</h5>
+        <CountDisplay location={this.props.location}/>
       </div>
     )
   }
