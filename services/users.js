@@ -9,7 +9,7 @@ async function checkEmailAlreadyRegistered (email) {
 }
 
 async function signup (firstName, lastName, email) {
-  const emailRegistered = checkEmailAlreadyRegistered(email)
+  const emailRegistered = await checkEmailAlreadyRegistered(email)
   if (emailRegistered) {
     throw new Error('emailRegistered')
   }
@@ -28,7 +28,7 @@ async function login (secret) {
 async function addFriend (userId, friendFName, friendLName, friendEmail) {
   // Get userId of friend
   let friendId
-  const userExists = await this.checkEmailAlreadyRegistered(friendEmail)
+  const userExists = await checkEmailAlreadyRegistered(friendEmail)
   if (userExists) {
     friendId = await UserModel.getUserIdByEmail(friendEmail)
   } else {
