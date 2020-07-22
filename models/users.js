@@ -9,7 +9,8 @@ module.exports = {
       text: 'INSERT INTO users(firstname, lastname, email, secret) VALUES ($1, $2, $3, $4) RETURNING id',
       values: [firstname.toLowerCase(), lastname.toLowerCase(), email.toLowerCase(), secret]
     }
-    return db.query(insertUser).rows[0].id
+    const result = await db.query(insertUser)
+    return result.rows[0].id
   },
 
   // Checks for duplicate users with same email
