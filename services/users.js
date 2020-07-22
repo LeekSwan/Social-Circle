@@ -48,7 +48,46 @@ async function addFriend (userId, friendFName, friendLName, friendEmail) {
   return UserModel.addFriend(userId, friendId)
 }
 
-async function test () {
+// Returns a Set containing userIds for every friend in their social circle
+async function getSocialCircle (secret) {
+  const userId = await UserModel.getUserIdBySecret(secret)
+
+  // -- Create Set of all friends in the social circle
+  let queue = [userId]
+  const seen = new Set()
+  seen.add(userId)
+
+  let newQueue = []
+  while (queue.length > 0) {
+    // reset new queue
+    newQueue = []
+
+    // Run through the queue in parallel
+    //   For a given user:
+    //   1. Get all friends of that users
+    //   2. Add any "unseen" friends to "seen" and new queue
+    // Await them all at the end
+    const promises = queue.map(async user => {
+      const friends = await UserModel.getFriendsById(user)
+      friends.forEach(friend => {
+        if (!seen.has(friend)) {
+          newQueue.push(friend)
+          seen.add(friend)
+        }
+      })
+    })
+    await Promise.all(promises)
+
+    // replace processed queue with new queue
+    queue = newQueue
+  }
+
+  // Don't include original user in the network
+  seen.delete(userId)
+  return seen
+}
+
+async function testDB () {
   return UserModel.getUsers()
 }
 
@@ -56,5 +95,6 @@ module.exports = {
   signup,
   login,
   addFriend,
-  test
+  getSocialCircle,
+  testDB
 }

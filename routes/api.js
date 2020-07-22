@@ -39,6 +39,15 @@ api.get('/user/:secret', function (req, res) {
     })
 })
 
+// Route for getting exposure count for user
+api.get('/user/:secret/exposure', async function (req, res) {
+  const { secret } = req.params
+  UserService.getSocialCircle(secret)
+    .then((userCircle) => {
+      res.status(200).json({ exposure: userCircle.size })
+    })
+})
+
 // TODO: check if friend added is the user itself
 api.post('/friendships', async function (req, res) {
   const { userId, friendFName, friendLName, friendEmail } = req.body

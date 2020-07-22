@@ -11,7 +11,7 @@ router.get('/test', function (req, res) {
 router.get('/test-db', async function (req, res) {
   // pretty print JSON
   res.header('Content-Type', 'application/json')
-  res.send(JSON.stringify(await UserService.test(), null, 4))
+  res.send(JSON.stringify(await UserService.testDB(), null, 4))
 })
 
 router.get('/test-mail', function (req, res) {
