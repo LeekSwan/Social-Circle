@@ -3,6 +3,9 @@ import axios from 'axios'
 import { Button, Spinner, Alert } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import CountDisplay from './CountDisplay'
+import DeleteButton from './DeleteButton'
+
 class AddFriend extends React.Component {
   constructor (props) {
     super(props)
@@ -15,24 +18,28 @@ class AddFriend extends React.Component {
       friendLName: '',
       friendEmail: '',
       isLoading: false,
-      isDelete: false,
       status: 0
     }
 
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
   }
+  
+
+
 
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
+        console.log(res)
         this.setState({
           userId: res.data.id,
           firstName: res.data.firstname,
           lastName: res.data.lastname,
           friendships: res.data.friendslist
         })
+      }).catch(err => {
+        console.log(err)
       })
   }
 
@@ -42,8 +49,9 @@ class AddFriend extends React.Component {
     if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
       return this.setState({ status: 406 })
     }
-    axios.post(`/api/friendships`, this.state)
+    axios.post('/api/friendships', this.state)
       .then(res => {
+        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState(state => {
             const friendships = state.friendships.concat(state.friendFName + ' ' + state.friendLName)
@@ -58,21 +66,11 @@ class AddFriend extends React.Component {
           this.setState({ status: 409 })
         }
         this.setState({ isLoading: false })
+        console.log(err)
       })
     e.preventDefault()
     e.target.reset()
   }
-
-  handleDelete (e) {
-    axios.delete(`/api/delete${this.props.location.pathname}`)
-    .then(res => {
-      if (res.status >= 200 && res.status < 300) {
-        this.setState({ status: 203 })
-        this.props.history.push({ pathname: '/user/'})
-      }
-    })
-  }
-
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -83,6 +81,7 @@ class AddFriend extends React.Component {
       [name]: value
     })
   }
+
 
   render () {
     return (
@@ -122,12 +121,10 @@ class AddFriend extends React.Component {
           {displayAlert(this.state)}
         </div>
 
-        <h5>Total Count</h5>
-        <h5>0</h5>
+        <CountDisplay location={this.props.location}/>
+       
 
-        <form onSubmit={this.handleDelete}>
-          <input type='submit' value='Delete Account' />
-        </form>
+        <DeleteButton location={this.props.location} history={this.props.history}/>
 
       </div>
     )
@@ -183,17 +180,10 @@ function displayAlert (state) {
   } else if (state.status === 201) {
     return (
       <Alert variant='success'>
-      You are now friends with {state.friendFName} {state.friendLName}.
-      </Alert>
-    )
-  } else if (state.status === 203) {
-    return (
-      <Alert variant='info'>
-      Your account has been deleted.
+      You are now friends with {state.friendFName} {state.friendLName}
       </Alert>
     )
   }
 }
-
 
 export default AddFriend
