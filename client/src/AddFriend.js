@@ -20,13 +20,9 @@ class AddFriend extends React.Component {
       isLoading: false,
       status: 0
     }
-
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-  
-
-
 
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
@@ -82,7 +78,6 @@ class AddFriend extends React.Component {
     })
   }
 
-
   render () {
     return (
       <div>
@@ -121,10 +116,9 @@ class AddFriend extends React.Component {
           {displayAlert(this.state)}
         </div>
 
-        <CountDisplay location={this.props.location}/>
-       
+        <CountDisplay location={this.props.location} />
 
-        <DeleteButton location={this.props.location} history={this.props.history}/>
+        <DeleteButton location={this.props.location} history={this.props.history} />
 
       </div>
     )
@@ -153,15 +147,6 @@ function submitButton () {
     <input type='submit' value='Add Friend' />
   )
 }
-
-// // Helper function to set alert timer
-// function alertTimer (status) {
-//   this.setState({status: status},()=>{
-//     window.setTimeout(()=>{
-//       this.setState({status: status})
-//     },2000)
-//   });
-// }
 
 // TODO: Set a 2 second timer to display alert before it disapears
 function displayAlert (state) {
