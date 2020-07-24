@@ -35,14 +35,13 @@ class CountDisplay extends React.Component {
       <div>
         <h5>Total Count</h5>
         <h5>
-          { this.state.isLoading
+          {this.state.isLoading
             ? <Spinner
               animation='border'
               size='sm'
               role='status'
               />
-            : this.state.exposure
-          }
+            : this.state.exposure}
         </h5>
         <Button
           onClick={this.handleRefresh.bind(this)}

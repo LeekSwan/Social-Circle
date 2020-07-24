@@ -4,6 +4,7 @@ import { Button, Spinner, Alert } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
+import DeleteButton from './DeleteButton'
 
 class AddFriend extends React.Component {
   constructor (props) {
@@ -19,7 +20,6 @@ class AddFriend extends React.Component {
       isLoading: false,
       status: 0
     }
-
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
@@ -66,10 +66,6 @@ class AddFriend extends React.Component {
       })
     e.preventDefault()
     e.target.reset()
-  }
-
-  handleDelete (e) {
-    axios.delete('/api/delete', this.state)
   }
 
   handleChange (e) {
@@ -120,7 +116,10 @@ class AddFriend extends React.Component {
           {displayAlert(this.state)}
         </div>
 
-        <CountDisplay location={this.props.location}/>
+        <CountDisplay location={this.props.location} />
+
+        <DeleteButton location={this.props.location} history={this.props.history} />
+
       </div>
     )
   }
@@ -148,15 +147,6 @@ function submitButton () {
     <input type='submit' value='Add Friend' />
   )
 }
-
-// // Helper function to set alert timer
-// function alertTimer (status) {
-//   this.setState({status: status},()=>{
-//     window.setTimeout(()=>{
-//       this.setState({status: status})
-//     },2000)
-//   });
-// }
 
 // TODO: Set a 2 second timer to display alert before it disapears
 function displayAlert (state) {

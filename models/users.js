@@ -96,27 +96,30 @@ module.exports = {
   },
 
   // Helper function for /api/friendships to add friends to friendships db
-  addFriend: function (user1, user2) {
+  addFriend: async function (user1, user2) {
     const addFriendship = {
-      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) ',
+      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
       values: [user1, user2]
     }
     return db.query(addFriendship)
   },
 
-  // delete user account
-  deleteUser: function (userSecret) {
-
-  },
-
-  // remove all of a users friendships
-  removeAllFriendships: function (userSecret) {
-
+  // delete user account and all existing friendships
+  deleteUserAndFriendships: async function (userSecret) {
+    const deleteUserAndFriendships = {
+      text: 'DELETE FROM users WHERE secret = $1',
+      values: [userSecret]
+    }
+    return db.query(deleteUserAndFriendships)
   },
 
   // removes specific friendship from users friendships
   removeFriendship: function (userId, friendId) {
-
+    const deleteFriendship = {
+      text: 'DELETE FROM friendships WHERE user1 = $1 AND user2 = $2',
+      values: { userId, friendId }
+    }
+    return db.query(deleteFriendship)
   },
 
   getUsers: function () {
@@ -134,6 +137,6 @@ module.exports = {
     // transform res.rows
     // FROM:  [ { user2: 123}, { user2: 456}, ... ]
     // TO:    [ 123, 456 ]
-    return res.rows.map( row => row.user2 )
+    return res.rows.map(row => row.user2)
   }
 }
