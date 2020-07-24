@@ -88,7 +88,7 @@ async function getSocialCircle (secret) {
 }
 
 async function deleteUserAndFriends (secret) {
-  return UserModel.deleteUserAndFriendships()
+  return UserModel.deleteUserAndFriendships(secret)
 }
 
 async function testDB () {

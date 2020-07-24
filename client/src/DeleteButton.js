@@ -27,25 +27,25 @@ class DeleteButton extends React.Component {
 	render() {
 		return (
 			<div>
-          <Button variant="danger" onClick={this.handleShow}>
-            Delete Account
-          </Button>
+				<Button variant="danger" onClick={this.handleShow}>
+					Delete Account
+				</Button>
 
-          <Modal show={this.state.showDelete} onHide={this.handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Are you sure?</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>Deleting account will delete user and friendships</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleClose}>
-                Cancel
-              </Button>
-              <Button variant="danger" onClick={this.handleDelete}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
+				<Modal show={this.state.showDelete} onHide={this.handleClose}>
+					<Modal.Header closeButton>
+						<Modal.Title>Are you sure?</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>Deleting account will delete user and friendships</Modal.Body>
+					<Modal.Footer>
+						<Button variant="secondary" onClick={this.handleClose}>
+							Cancel
+						</Button>
+						<Button variant="danger" onClick={this.handleDelete}>
+							Delete
+						</Button>
+					</Modal.Footer>
+				</Modal>
+      </div>
 		)
 	}
 }
