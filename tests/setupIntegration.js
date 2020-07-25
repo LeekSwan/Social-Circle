@@ -6,7 +6,12 @@ const { getClient } = require('../db/postgres')
 let pgContainer
 let client
 before(async function () {
-  this.timeout(10000)
+  if (process.env.CI) {
+    // Extend timeout for Github Action workflow
+    this.timeout(30 * 1000)
+  } else {
+    this.timeout(10 * 1000)
+  }
 
   console.log('-----BEGIN setupIntegration.js-----')
 
