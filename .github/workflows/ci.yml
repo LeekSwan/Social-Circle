@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-18.04]
+        os: [ubuntu-18.04] # use of docker requires linux
         node-version: [12.18.3]
 
     steps:
