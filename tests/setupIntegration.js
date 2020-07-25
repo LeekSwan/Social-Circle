@@ -1,14 +1,11 @@
-const { GenericContainer } = require("testcontainers");
-const { Client } = require('pg')
+const { GenericContainer } = require('testcontainers')
 const pgm = require('node-pg-migrate')
 
 const { getClient } = require('../db/postgres')
 
-
 let pgContainer
 let client
 before(async function () {
-
   this.timeout(10000)
 
   console.log('-----BEGIN setupIntegration.js-----')
@@ -20,11 +17,11 @@ before(async function () {
 
   console.log('> Creating pgContainer...')
   pgContainer = await new GenericContainer('postgres')
-     .withEnv("POSTGRES_USER", 'test')
-     .withEnv("POSTGRES_PASSWORD", 'test')
-     .withEnv("POSTGRES_DB", 'postgres')
-     .withExposedPorts(5432)
-     .start();
+    .withEnv('POSTGRES_USER', 'test')
+    .withEnv('POSTGRES_PASSWORD', 'test')
+    .withEnv('POSTGRES_DB', 'postgres')
+    .withExposedPorts(5432)
+    .start()
   process.env.PG_CONTAINER_PORT = pgContainer.getMappedPort(5432)
   console.log('> hello', pgContainer)
 

@@ -16,7 +16,6 @@ const indexRouter = require('./routes/index.js')
 const apiRouter = require('./routes/api.js')
 
 const app = express()
-const port = process.env.PORT || 8080
 
 // Log all HTTP requests
 app.use(morgan('dev'))

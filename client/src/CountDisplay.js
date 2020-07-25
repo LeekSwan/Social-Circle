@@ -36,11 +36,7 @@ class CountDisplay extends React.Component {
         <h5>Total Count</h5>
         <h5>
           {this.state.isLoading
-            ? <Spinner
-              animation='border'
-              size='sm'
-              role='status'
-              />
+            ? <Spinner animation='border' size='sm' role='status' />
             : this.state.exposure}
         </h5>
         <Button

@@ -21,7 +21,7 @@ const dbConfig = {
   }
 }
 
-function getConfig() {
+function getConfig () {
   // process.env.PG_CONTAINER_PORT is initially undefined
   // but it gets set in `tests/setupIntegration.js` before `getConfig` is called
   // so we need to manually set it before returning config
@@ -35,6 +35,5 @@ function getConfig() {
     console.log('Unrecognized NODE_ENV: ', process.env.NODE_ENV)
   }
 }
-
 
 module.exports = { getConfig }
