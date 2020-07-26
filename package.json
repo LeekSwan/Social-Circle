@@ -46,6 +46,7 @@
   "standard": {
     "ignore": [
       "client/build"
-    ]
+    ],
+  "globals": [ "describe", "it", "before", "beforeEach", "afterEach", "after" ]
   }
 }

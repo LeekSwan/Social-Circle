@@ -2,20 +2,18 @@ const { expect } = require('chai')
 const db = require('../db')
 
 describe('integration tests', function () {
-
   it('should pass', () => {
     expect(true).to.equal(true)
   })
 
   describe('test db', function () {
-
     const mockName = 'testName'
     beforeEach('insert user', async function () {
       const insertUser = {
         text: 'INSERT INTO users(name) VALUES ($1)',
         values: [mockName]
       }
-      const result = await db.query(insertUser)
+      await db.query(insertUser)
     })
 
     it('should contain one inserted user', async function () {
@@ -28,5 +26,4 @@ describe('integration tests', function () {
       expect(result.rows[0].name).to.equal(mockName)
     })
   })
-
 })
