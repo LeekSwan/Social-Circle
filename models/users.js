@@ -21,7 +21,7 @@ module.exports = {
       values: [email.toLowerCase()]
     }
     const result = await db.query(checkdup)
-    return result.rows[0].count
+    return parseInt(result.rows[0].count)
   },
 
   // Get user data from secret

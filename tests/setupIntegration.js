@@ -13,7 +13,7 @@ before(async function () {
     this.timeout(10 * 1000)
   }
 
-  console.log('-----BEGIN setupIntegration.js-----')
+  console.log('-----BEGIN Integration Setup-----')
 
   // Load local .env file in dev environments
   if (process.env.NODE_ENV !== 'test') {
@@ -39,6 +39,8 @@ before(async function () {
     dir: 'migrations'
   }
   await pgm.default(migrationOptions)
+
+  console.log('-----END Integration Setup-----\n\n')
 })
 
 after(async function () {
