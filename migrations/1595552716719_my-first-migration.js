@@ -5,29 +5,37 @@ exports.shorthands = undefined
 exports.up = (pgm) => {
   pgm.createTable('users', {
     id: 'id',
-    name: { type: 'varchar(1000)', notNull: true },
+    firstname: { type: 'text' },
+    lastname: { type: 'text' },
+    email: { type: 'text' },
+    secret: { type: 'text' },
+    deletedAt: { type: 'timestamptz' },
     createdAt: {
-      type: 'timestamp',
+      type: 'timestamptz',
       notNull: true,
       default: pgm.func('current_timestamp')
     }
   })
-  pgm.createTable('posts', {
+  pgm.createTable('friendships', {
     id: 'id',
-    userId: {
+    user1: {
       type: 'integer',
       notNull: true,
       references: '"users"',
       onDelete: 'cascade'
     },
-    body: { type: 'text', notNull: true },
+    user2: {
+      type: 'integer',
+      notNull: true,
+      references: '"users"',
+      onDelete: 'cascade'
+    },
     createdAt: {
-      type: 'timestamp',
+      type: 'timestamptz',
       notNull: true,
       default: pgm.func('current_timestamp')
     }
   })
-  pgm.createIndex('posts', 'userId')
 }
 
 exports.down = pgm => {}
