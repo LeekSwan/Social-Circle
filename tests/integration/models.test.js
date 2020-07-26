@@ -1,12 +1,7 @@
 const { expect } = require('chai')
 
 const UserModel = require('../../models/users')
-const db = require('../../db')
-
-async function deleteAllUsers () {
-  const deleteAllUsers = { text: 'DELETE FROM users' }
-  await db.query(deleteAllUsers)
-}
+const { deleteAllUsers } = require('./utils')
 
 describe('UserModel', function () {
   let mockFirstName, mockLastName, mockEmail, mockSecret
