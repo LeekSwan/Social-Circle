@@ -18,7 +18,10 @@ const apiRouter = require('./routes/api.js')
 const app = express()
 
 // Log all HTTP requests
-app.use(morgan('dev'))
+// (Disable logs when running tests)
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'))
+}
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')))
