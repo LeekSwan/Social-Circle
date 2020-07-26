@@ -40,8 +40,7 @@ before(async function () {
   }
   await pgm.default(migrationOptions)
 
-  console.log('-----END Integration Setup-----')
-
+  console.log('-----END Integration Setup-----\n\n')
 })
 
 after(async function () {

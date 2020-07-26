@@ -9,7 +9,6 @@ async function deleteAllUsers () {
 }
 
 describe('UserModel', function () {
-
   let mockFirstName, mockLastName, mockEmail, mockSecret
   let mockUserArgs
   beforeEach(function () {
@@ -17,7 +16,7 @@ describe('UserModel', function () {
     mockLastName = 'mockLastName'
     mockEmail = 'mockEmail'
     mockSecret = 'mockSecret'
-    mockUserArgs = [ mockFirstName, mockLastName, mockEmail, mockSecret ]
+    mockUserArgs = [mockFirstName, mockLastName, mockEmail, mockSecret]
   })
 
   afterEach(async function () {
@@ -42,18 +41,19 @@ describe('UserModel', function () {
     it('should return an increasing id on consecutive calls', async function () {
       const id1 = await UserModel.create(...mockUserArgs)
       const id2 = await UserModel.create(...mockUserArgs)
-      expect(id2).to.equal(id1+1)
+      expect(id2).to.equal(id1 + 1)
     })
   })
 
   describe('.countEmail(...)', function () {
     let missingEmail, oneEmail, twoEmail
+    let oneEmailUser, twoEmailUser
     beforeEach('setup db', async function () {
       missingEmail = 'missingEmail'
       oneEmail = 'oneEmail'
       twoEmail = 'twoEmail'
-      oneEmailUser = [ mockFirstName, mockLastName, oneEmail, mockSecret ]
-      twoEmailUser = [ mockFirstName, mockLastName, twoEmail, mockSecret ]
+      oneEmailUser = [mockFirstName, mockLastName, oneEmail, mockSecret]
+      twoEmailUser = [mockFirstName, mockLastName, twoEmail, mockSecret]
 
       await Promise.all([
         UserModel.create(...oneEmailUser),
@@ -77,5 +77,4 @@ describe('UserModel', function () {
       expect(count).to.equal(2)
     })
   })
-
 })
