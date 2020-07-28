@@ -10,7 +10,6 @@ api.use(bodyParser.json())
 api.post('/users', async function (req, res) {
   const { firstName, lastName, email } = req.body
   if (!firstName || !lastName || !email) {
-    console.log('Input field empty')
     return res.status(400).send('Input field empty')
   }
   UserService.signup(firstName, lastName, email)
