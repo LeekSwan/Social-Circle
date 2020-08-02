@@ -2,24 +2,24 @@ import React from 'react'
 import { Alert } from 'react-bootstrap'
 
 class Alerts extends React.Component {
-	render() {
-		return (
-			<div>
-				{displayAlert(this.props.state)}
-			</div>
-		)
-	}
+  render () {
+    return (
+      <div>
+        {displayAlert(this.props.state)}
+      </div>
+    )
+  }
 }
 
 // TODO: Set a 2 second timer to display alert before it disapears
 function displayAlert (state) {
-	if (state.status === 1) {
-		return (
+  if (state.status === 1) {
+    return (
       <Alert variant='danger'>
       You have already created an account with this email! Please check your email to login.
       </Alert>
     )
-	} else if (state.status === 409) {
+  } else if (state.status === 409) {
     return (
       <Alert variant='danger'>
       You are already friends with this person.

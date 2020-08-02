@@ -71,7 +71,6 @@ class AddFriend extends React.Component {
     e.target.reset()
   }
 
-
   handleChange (e) {
     // handles changes to add friend inputs
     const target = e.target
@@ -81,7 +80,6 @@ class AddFriend extends React.Component {
       [name]: value
     })
   }
-
 
   render () {
     return (
