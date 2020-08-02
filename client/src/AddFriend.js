@@ -1,10 +1,11 @@
 import React from 'react'
 import axios from 'axios'
-import { Button, Spinner, Alert } from 'react-bootstrap'
+import { Button, Spinner} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
+import Alerts from './Alerts'
 
 class AddFriend extends React.Component {
   constructor (props) {
@@ -23,7 +24,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-
+  
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
@@ -55,18 +56,18 @@ class AddFriend extends React.Component {
             return { friendships, status }
           })
         }
-        this.setState({ isLoading: false })
+        this.setState({ isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
       })
       .catch(err => {
         if (err.response.status === 409) {
-          this.setState({ status: 409 })
+          this.setState({ status: 409, isLoading: false, friendFName: '', friendLName: '', friendEmail: ''  })
         }
-        this.setState({ isLoading: false })
         console.log(err)
       })
     e.preventDefault()
     e.target.reset()
   }
+
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -77,6 +78,7 @@ class AddFriend extends React.Component {
       [name]: value
     })
   }
+
 
   render () {
     return (
@@ -112,10 +114,8 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-        <div>
-          {displayAlert(this.state)}
-        </div>
-
+        <Alerts state={this.state}/>
+        
         <CountDisplay location={this.props.location} />
 
         <DeleteButton location={this.props.location} history={this.props.history} />
@@ -146,29 +146,6 @@ function submitButton () {
   return (
     <input type='submit' value='Add Friend' />
   )
-}
-
-// TODO: Set a 2 second timer to display alert before it disapears
-function displayAlert (state) {
-  if (state.status === 409) {
-    return (
-      <Alert variant='danger'>
-      You are already friends with this person.
-      </Alert>
-    )
-  } else if (state.status === 406) {
-    return (
-      <Alert variant='warning'>
-      Please fill all fields.
-      </Alert>
-    )
-  } else if (state.status === 201) {
-    return (
-      <Alert variant='success'>
-      You are now friends with {state.friendFName} {state.friendLName}
-      </Alert>
-    )
-  }
 }
 
 export default AddFriend

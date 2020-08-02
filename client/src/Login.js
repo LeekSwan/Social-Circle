@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 
+import Alerts from './Alerts'
+
 class Login extends React.Component {
   constructor (props) {
     super(props)
@@ -15,7 +17,7 @@ class Login extends React.Component {
 
   handleSubmit (e) {
     if (!this.state.firstName || !this.state.lastName || !this.state.email) {
-      return window.alert('Input field empty')
+      return this.setState({ status: 406 })
     }
     axios.post('/api/users', this.state)
       .then(res => {
@@ -28,7 +30,7 @@ class Login extends React.Component {
       })
       .catch(err => {
         if (err.response.status === 409) {
-          window.alert('You have already created an account with this email! Please check your email to login.')
+          return this.setState({ status: 1 })
         }
       })
     e.preventDefault()
@@ -71,6 +73,7 @@ class Login extends React.Component {
           <input type='submit' value='Submit' />
 
         </form>
+        <Alerts state={this.state}/>
       </div>
     )
   }
