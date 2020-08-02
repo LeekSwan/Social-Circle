@@ -18,11 +18,7 @@ class Login extends React.Component {
 
   handleSubmit (e) {
     if (!this.state.firstName || !this.state.lastName || !this.state.email) {
-<<<<<<< HEAD
       return this.setState({ alertType: 'emptyField' })
-=======
-      return this.setState({ status: 406 })
->>>>>>> moved alerts to separate file
     }
     axios.post('/api/users', this.state)
       .then(res => {
@@ -35,11 +31,7 @@ class Login extends React.Component {
       })
       .catch(err => {
         if (err.response.status === 409) {
-<<<<<<< HEAD
           return this.setState({ alertType: 'duplicateAccount' })
-=======
-          return this.setState({ status: 1 })
->>>>>>> moved alerts to separate file
         }
       })
     e.preventDefault()
@@ -82,11 +74,8 @@ class Login extends React.Component {
           <input type='submit' value='Submit' />
 
         </form>
-<<<<<<< HEAD
+
         <Alerts alertType={this.state.alertType} />
-=======
-        <Alerts state={this.state}/>
->>>>>>> moved alerts to separate file
       </div>
     )
   }
