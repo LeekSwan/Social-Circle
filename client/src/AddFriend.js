@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Button, Spinner } from 'react-bootstrap'
+import { Button, Spinner} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
@@ -24,7 +24,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-
+  
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
@@ -71,6 +71,7 @@ class AddFriend extends React.Component {
     e.target.reset()
   }
 
+
   handleChange (e) {
     // handles changes to add friend inputs
     const target = e.target
@@ -80,6 +81,7 @@ class AddFriend extends React.Component {
       [name]: value
     })
   }
+
 
   render () {
     return (
