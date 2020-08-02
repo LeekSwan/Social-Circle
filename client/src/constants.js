@@ -1,0 +1,8 @@
+module.exports = {
+  alertTable: {
+    EMPTY_FIELD: 'EMPTY_FIELD',
+    CREATED: 'CREATED',
+    FRIEND_EXISTS: 'FRIEND_EXISTS',
+    DUPLICATE_ACCOUNT: 'DUPLICATE_ACCOUNT'
+  }
+}
