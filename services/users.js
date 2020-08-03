@@ -1,4 +1,5 @@
 const UserModel = require('../models/users')
+const MailService = require('../services/mail')
 
 const { v4: uuidv4 } = require('uuid')
 
@@ -15,7 +16,7 @@ async function signup (firstName, lastName, email) {
   }
   const secret = uuidv4()
   UserModel.create(firstName, lastName, email, secret)
-  // TODO: send email on signup
+  MailService.sendNewUserEmail({firstName, lastName, email, secret})
   return secret
 }
 
