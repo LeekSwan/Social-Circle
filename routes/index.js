@@ -15,7 +15,7 @@ router.get('/test-db', async function (req, res) {
 })
 
 router.get('/test-mail', function (req, res) {
-  const myEmail = 'lilx@unc.edu'
+  const myEmail = process.env.EMAIL
   // const sendEmail = false
   const sendEmail = true
   if (!sendEmail) {
