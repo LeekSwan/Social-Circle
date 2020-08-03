@@ -25,11 +25,11 @@ async function sendNewUserEmail (data) {
 
 async function sendNewFriendEmail (data) {
   const msg = {
-    to: data.email,
+    to: data.friendEmail,
     from: process.env.EMAIL,
     subject: 'Invitation To Social Circle',
     text: 'Invitation To Social Circle',
-    html: newEmail.newUser(data.firstName, data.lastName, data.secret)
+    html: newEmail.newFriend(data.friendFName, data.friendLName, data.secret)
   }
   return mailClient.send(msg)
 }
@@ -38,7 +38,4 @@ module.exports = {
   sendTestEmailToMyself,
   sendNewUserEmail,
   sendNewFriendEmail
-
 }
-
-

@@ -16,7 +16,7 @@ async function signup (firstName, lastName, email) {
   }
   const secret = uuidv4()
   UserModel.create(firstName, lastName, email, secret)
-  MailService.sendNewUserEmail({firstName, lastName, email, secret})
+  MailService.sendNewUserEmail({ firstName, lastName, email, secret })
   return secret
 }
 
@@ -35,7 +35,7 @@ async function addFriend (userId, friendFName, friendLName, friendEmail) {
   } else {
     const secret = uuidv4()
     const { friendId } = await UserModel.create(friendFName, friendLName, friendEmail, secret)
-    // TODO: send invitation email
+    MailService.sendNewFriendEmail({ friendFName, friendLName, friendEmail, secret })
     return friendId
   }
 
