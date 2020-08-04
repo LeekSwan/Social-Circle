@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
-import Alerts from './Alerts'
+import Alerts from './FormAlert'
 
 class AddFriend extends React.Component {
   constructor (props) {
@@ -19,7 +19,7 @@ class AddFriend extends React.Component {
       friendLName: '',
       friendEmail: '',
       isLoading: false,
-      status: 0
+      alertType: ''
     }
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -45,7 +45,7 @@ class AddFriend extends React.Component {
     // check for empty inputs
     this.setState({ isLoading: true })
     if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
-      return this.setState({ status: 406 })
+      return this.setState({ alertType: 'emptyField' })
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
@@ -53,15 +53,15 @@ class AddFriend extends React.Component {
         if (res.status >= 200 && res.status < 300) {
           this.setState(state => {
             const friendships = state.friendships.concat(state.friendFName + ' ' + state.friendLName)
-            const status = 201
-            return { friendships, status }
+            const alertType = 'created'
+            return { friendships, alertType }
           })
         }
         this.setState({ isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
       })
       .catch(err => {
         if (err.response.status === 409) {
-          this.setState({ status: 409, isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
+          this.setState({ alertType: 'friendshipExists', isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
         }
         console.log(err)
       })
@@ -113,7 +113,7 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-        <Alerts state={this.state} />
+        <Alerts alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
 
         <CountDisplay location={this.props.location} />
 
