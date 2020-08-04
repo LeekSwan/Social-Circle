@@ -26,7 +26,7 @@ async function login (secret) {
 }
 
 // TODO: refactor this so it makes more sense
-async function addFriend (userId, friendFName, friendLName, friendEmail) {
+async function addFriend (userId, firstName, lastName, friendFName, friendLName, friendEmail) {
   // Get userId of friend
   let friendId
   const userExists = await checkEmailAlreadyRegistered(friendEmail)
@@ -34,9 +34,8 @@ async function addFriend (userId, friendFName, friendLName, friendEmail) {
     friendId = await UserModel.getUserIdByEmail(friendEmail)
   } else {
     const secret = uuidv4()
-    const { friendId } = await UserModel.create(friendFName, friendLName, friendEmail, secret)
-    MailService.sendNewFriendEmail({ friendFName, friendLName, friendEmail, secret })
-    return friendId
+    friendId = await UserModel.create(friendFName, friendLName, friendEmail, secret)
+    MailService.sendNewFriendEmail({ firstName, lastName, friendFName, friendLName, friendEmail, secret })
   }
 
   // Add friend

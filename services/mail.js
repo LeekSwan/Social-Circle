@@ -29,7 +29,7 @@ async function sendNewFriendEmail (data) {
     from: process.env.EMAIL,
     subject: 'Invitation To Social Circle',
     text: 'Invitation To Social Circle',
-    html: newEmail.newFriend(data.friendFName, data.friendLName, data.secret)
+    html: newEmail.newFriend(data.firstName, data.lastName, data.friendFName, data.friendLName, data.secret)
   }
   return mailClient.send(msg)
 }

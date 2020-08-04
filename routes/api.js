@@ -49,8 +49,8 @@ api.get('/user/:secret/exposure', async function (req, res) {
 
 // TODO: check if friend added is the user itself
 api.post('/friendships', async function (req, res) {
-  const { userId, friendFName, friendLName, friendEmail } = req.body
-  UserService.addFriend(userId, friendFName, friendLName, friendEmail)
+  const { userId, firstName, lastName, friendFName, friendLName, friendEmail } = req.body
+  UserService.addFriend(userId, firstName, lastName, friendFName, friendLName, friendEmail)
     .then(() => {
       res.status(201).send()
     })
