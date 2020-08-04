@@ -1,5 +1,5 @@
 const mailClient = require('../mail/sendgrid.js')
-const newEmail = require('../mail/emailTemplate.js')
+const { buildNewFriendEmail, buildNewUserEmail } = require('../mail/emailTemplates.js')
 
 async function sendTestEmailToMyself (myPersonalEmail) {
   const msg = {
@@ -15,10 +15,10 @@ async function sendTestEmailToMyself (myPersonalEmail) {
 async function sendNewUserEmail (data) {
   const msg = {
     to: data.email,
-    from: process.env.EMAIL,
+    from: process.env.EMAIL_SENDER_ADDRESS,
     subject: 'Invitation To Social Circle',
     text: 'Invitation To Social Circle',
-    html: newEmail.newUser(data.firstName, data.lastName, data.secret)
+    html: buildNewUserEmail(data.firstName, data.lastName, data.secret)
   }
   return mailClient.send(msg)
 }
@@ -26,10 +26,10 @@ async function sendNewUserEmail (data) {
 async function sendNewFriendEmail (data) {
   const msg = {
     to: data.friendEmail,
-    from: process.env.EMAIL,
+    from: process.env.EMAIL_SENDER_ADDRESS,
     subject: 'Invitation To Social Circle',
     text: 'Invitation To Social Circle',
-    html: newEmail.newFriend(data.firstName, data.lastName, data.friendFName, data.friendLName, data.secret)
+    html: buildNewFriendEmail(data.firstName, data.lastName, data.friendFName, data.friendLName, data.secret)
   }
   return mailClient.send(msg)
 }

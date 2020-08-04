@@ -1,5 +1,5 @@
 
-function newUser (firstName, lastName, secret) {
+function buildNewUserEmail (firstName, lastName, secret) {
   return (`
   <tr>
                           <td>
@@ -117,7 +117,7 @@ function newUser (firstName, lastName, secret) {
   `)
 }
 
-function newFriend (firstName, lastName, friendFName, friendLName, secret) {
+function buildNewFriendEmail (firstName, lastName, friendFName, friendLName, secret) {
   return (`
   <tr>
   <td>
@@ -236,6 +236,6 @@ function newFriend (firstName, lastName, friendFName, friendLName, secret) {
 }
 
 module.exports = {
-  newUser,
-  newFriend
+  buildNewUserEmail,
+  buildNewFriendEmail
 }

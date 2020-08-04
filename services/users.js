@@ -15,7 +15,7 @@ async function signup (firstName, lastName, email) {
     throw new Error('emailRegistered')
   }
   const secret = uuidv4()
-  UserModel.create(firstName, lastName, email, secret)
+  await UserModel.create(firstName, lastName, email, secret)
   MailService.sendNewUserEmail({ firstName, lastName, email, secret })
   return secret
 }

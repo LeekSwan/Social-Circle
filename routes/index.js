@@ -15,9 +15,9 @@ router.get('/test-db', async function (req, res) {
 })
 
 router.get('/test-mail', function (req, res) {
-  const myEmail = process.env.EMAIL
-  // const sendEmail = false
-  const sendEmail = true
+  const myEmail = ''
+  const sendEmail = false
+  // const sendEmail = true
   if (!sendEmail) {
     return res.send('sendEmail must be turned on manually')
   }
