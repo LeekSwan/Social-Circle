@@ -58,7 +58,7 @@ class AddFriend extends React.Component {
           })
         }
 
-        // This seems to be clearning the friend name before alert can pass the data into alert component. 
+        // This seems to be clearning the friend name before alert can pass the data into alert component.
         this.setState({ isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
       })
       .catch(err => {
