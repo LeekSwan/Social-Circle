@@ -74,7 +74,6 @@ class Login extends React.Component {
           <input type='submit' value='Submit' />
 
         </form>
-
         <Alerts alertType={this.state.alertType} />
       </div>
     )
