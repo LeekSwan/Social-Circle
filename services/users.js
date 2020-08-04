@@ -1,4 +1,5 @@
 const UserModel = require('../models/users')
+const MailService = require('../services/mail')
 
 const { v4: uuidv4 } = require('uuid')
 
@@ -14,8 +15,8 @@ async function signup (firstName, lastName, email) {
     throw new Error('emailRegistered')
   }
   const secret = uuidv4()
-  UserModel.create(firstName, lastName, email, secret)
-  // TODO: send email on signup
+  await UserModel.create(firstName, lastName, email, secret)
+  MailService.sendNewUserEmail({ firstName, lastName, email, secret })
   return secret
 }
 
@@ -25,7 +26,7 @@ async function login (secret) {
 }
 
 // TODO: refactor this so it makes more sense
-async function addFriend (userId, friendFName, friendLName, friendEmail) {
+async function addFriend (userId, firstName, lastName, friendFName, friendLName, friendEmail) {
   // Get userId of friend
   let friendId
   const userExists = await checkEmailAlreadyRegistered(friendEmail)
@@ -33,9 +34,8 @@ async function addFriend (userId, friendFName, friendLName, friendEmail) {
     friendId = await UserModel.getUserIdByEmail(friendEmail)
   } else {
     const secret = uuidv4()
-    const { friendId } = await UserModel.create(friendFName, friendLName, friendEmail, secret)
-    // TODO: send invitation email
-    return friendId
+    friendId = await UserModel.create(friendFName, friendLName, friendEmail, secret)
+    MailService.sendNewFriendEmail({ firstName, lastName, friendFName, friendLName, friendEmail, secret })
   }
 
   // Add friend
