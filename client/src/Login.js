@@ -1,7 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 
-import Alerts from './SignupAlert'
+import SignupAlert from './SignupAlert'
+import { alertTable } from './constants'
 
 class Login extends React.Component {
   constructor (props) {
@@ -18,7 +19,7 @@ class Login extends React.Component {
 
   handleSubmit (e) {
     if (!this.state.firstName || !this.state.lastName || !this.state.email) {
-      return this.setState({ alertType: 'emptyField' })
+      return this.setState({ alertType: alertTable.EMPTY_FIELD })
     }
     axios.post('/api/users', this.state)
       .then(res => {
@@ -31,7 +32,7 @@ class Login extends React.Component {
       })
       .catch(err => {
         if (err.response.status === 409) {
-          return this.setState({ alertType: 'duplicateAccount' })
+          return this.setState({ alertType: alertTable.DUPLICATE_ACCOUNT })
         }
       })
     e.preventDefault()
@@ -74,7 +75,7 @@ class Login extends React.Component {
           <input type='submit' value='Submit' />
 
         </form>
-        <Alerts alertType={this.state.alertType} />
+        <SignupAlert alertType={this.state.alertType} />
       </div>
     )
   }

@@ -5,7 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
-import Alerts from './FormAlert'
+import FormAlert from './FormAlert'
+import { alertTable } from './constants'
 
 class AddFriend extends React.Component {
   constructor (props) {
@@ -23,6 +24,7 @@ class AddFriend extends React.Component {
     }
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.resetForm = this.resetForm.bind(this)
   }
 
   componentDidMount () {
@@ -45,17 +47,18 @@ class AddFriend extends React.Component {
     // check for empty inputs
     this.setState({ isLoading: true })
     if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
-      return this.setState({ alertType: 'emptyField' })
+      return this.setState({ alertType: alertTable.EMPTY_FIELD })
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
         console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
-          this.setState(state => {
-            const friendships = state.friendships.concat(state.friendFName + ' ' + state.friendLName)
-            const alertType = 'created'
-            return { friendships, alertType }
+          this.setState({
+            friendships: this.state.friendships.concat(this.state.friendFName + ' ' + this.state.friendLName),
+            alertType: alertTable.CREATED
           })
+          // This seems to be clearning the friend name before alert can pass the data into alert component.
+          this.resetForm()
         }
 
         // This seems to be clearing the friend name before alert can pass the data into alert component.
@@ -63,13 +66,16 @@ class AddFriend extends React.Component {
       })
       .catch(err => {
         if (err.response.status === 409) {
-          this.setState({ alertType: 'friendshipExists', isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
+          this.setState({ alertType: alertTable.FRIEND_EXISTS, isLoading: false })
+          this.resetForm()
         }
         console.log(err)
       })
     e.preventDefault()
     e.target.reset()
   }
+
+  resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -115,7 +121,7 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-        <Alerts alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
+        <FormAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
 
         <CountDisplay location={this.props.location} />
 

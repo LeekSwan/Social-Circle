@@ -1,5 +1,6 @@
 import React from 'react'
 import { Alert } from 'react-bootstrap'
+import { alertTable } from './constants'
 
 class Alerts extends React.Component {
   render () {
@@ -13,19 +14,19 @@ class Alerts extends React.Component {
 
 // TODO: Set a 2 second timer to display alert before it disapears
 function displayAlert (alertType, firstName, lastName) {
-  if (alertType === 'friendshipExists') {
+  if (alertType === alertTable.FRIEND_EXISTS) {
     return (
       <Alert variant='danger'>
       You are already friends with this person.
       </Alert>
     )
-  } else if (alertType === 'emptyField') {
+  } else if (alertType === alertTable.EMPTY_FIELD) {
     return (
       <Alert variant='warning'>
       Please fill all fields.
       </Alert>
     )
-  } else if (alertType === 'created') {
+  } else if (alertType === alertTable.CREATED) {
     return (
       <Alert variant='success'>
       You are now friends with {firstName} {lastName}
