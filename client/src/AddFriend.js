@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Button, Spinner} from 'react-bootstrap'
+import { Button, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
@@ -24,7 +24,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-  
+
   componentDidMount () {
     axios.get(`/api${this.props.location.pathname}`)
       .then(res => {
@@ -40,6 +40,7 @@ class AddFriend extends React.Component {
       })
   }
 
+  // TODO: prevent page reload on empty input
   handleAdd (e) {
     // check for empty inputs
     this.setState({ isLoading: true })
@@ -60,14 +61,13 @@ class AddFriend extends React.Component {
       })
       .catch(err => {
         if (err.response.status === 409) {
-          this.setState({ status: 409, isLoading: false, friendFName: '', friendLName: '', friendEmail: ''  })
+          this.setState({ status: 409, isLoading: false, friendFName: '', friendLName: '', friendEmail: '' })
         }
         console.log(err)
       })
     e.preventDefault()
     e.target.reset()
   }
-
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -78,7 +78,6 @@ class AddFriend extends React.Component {
       [name]: value
     })
   }
-
 
   render () {
     return (
@@ -114,8 +113,8 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-        <Alerts state={this.state}/>
-        
+        <Alerts state={this.state} />
+
         <CountDisplay location={this.props.location} />
 
         <DeleteButton location={this.props.location} history={this.props.history} />

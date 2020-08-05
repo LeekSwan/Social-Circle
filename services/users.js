@@ -35,7 +35,7 @@ async function addFriend (userId, firstName, lastName, friendFName, friendLName,
   } else {
     const secret = uuidv4()
     friendId = await UserModel.create(friendFName, friendLName, friendEmail, secret)
-    MailService.sendNewFriendEmail({ firstName, lastName, friendFName, friendLName, friendEmail, secret })
+    // TODO: send invitation email
   }
 
   // Add friend

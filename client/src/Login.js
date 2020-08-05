@@ -73,7 +73,7 @@ class Login extends React.Component {
           <input type='submit' value='Submit' />
 
         </form>
-        <Alerts state={this.state}/>
+        <Alerts state={this.state} />
       </div>
     )
   }
