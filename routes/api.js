@@ -77,4 +77,10 @@ api.delete('/user/:secret', function (req, res) {
     })
 })
 
+api.delete('/friendships', function (req, res) {
+  console.log('got to express delete friendship')
+
+})
+
+
 module.exports = api

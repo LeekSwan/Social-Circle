@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Button, Spinner } from 'react-bootstrap'
+import { Button, Spinner, ListGroup } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
@@ -25,6 +25,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.resetForm = this.resetForm.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
   }
 
   componentDidMount () {
@@ -33,9 +34,9 @@ class AddFriend extends React.Component {
         console.log(res)
         this.setState({
           userId: res.data.id,
-          firstName: res.data.firstname,
-          lastName: res.data.lastname,
-          friendships: res.data.friendslist
+          firstName: res.data.firstName,
+          lastName: res.data.lastName,
+          friendships: res.data.friendsList
         })
       }).catch(err => {
         console.log(err)
@@ -59,7 +60,6 @@ class AddFriend extends React.Component {
           })
           this.resetForm()
         }
-
         // This seems to be clearing the friend name before alert can pass the data into alert component.
         this.setState({ isLoading: false })
       })
@@ -75,6 +75,26 @@ class AddFriend extends React.Component {
   }
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
+
+  handleRemove(item) {
+    console.log(item)
+    const newList = this.state.friendships.filter(function(value, index, arr){ return value !== item;});
+    // const newList = this.state.friendships.filter((item) => this.state.friendships !== item);
+    console.log(newList)
+    
+    this.setState({friendslist: newList})
+    console.log(this.state.friendslist)
+
+    axios.delete('/api/friendships', item) 
+      .then(res => {
+        console.log('deleted friend')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    
+
+  }
 
   handleChange (e) {
     // handles changes to add friend inputs
@@ -93,8 +113,11 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-          {this.state.friendships.map(item => (
-            <li key={item}>{item}</li>
+          {this.state.friendships.map((item) => (
+            <li key={item.friendId}>
+              <span>{item.firstName} {item.lastName} </span> 
+              <button type="submit" onClick={() => { this.handleRemove(item.friendId) }}>X</button>
+            </li> 
           ))}
         </ul>
 

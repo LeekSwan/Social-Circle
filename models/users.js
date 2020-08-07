@@ -30,7 +30,7 @@ module.exports = {
   // - getFriendsById
   getUserBySecret: async function (secret) {
     const getUserData = {
-      text: 'SELECT users.id, users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
+      text: 'SELECT users.id, users.firstname, users.lastname, f.user2 AS friendId, u.firstname AS friendfname, u.lastname As friendlname ' +
       'FROM users ' +
       'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
       'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
@@ -47,17 +47,18 @@ module.exports = {
       flist[0] = 'You currently have no friends'
     } else {
       for (let i = 0; i < friends.length; i++) {
-        const fname = capitalized(friends[i].friendfname)
-        const lname = capitalized(friends[i].friendlname)
-        flist[i] = fname + ' ' + lname
+        flist.push({
+          friendId: friends[i].friendid,
+          firstName: capitalized(friends[i].friendfname),
+          lastName: capitalized(friends[i].friendlname)
+        })
       }
     }
-    // TODO: camelCase this return
     return {
       id: friends[0].id,
-      firstname: capitalized(friends[0].firstname),
-      lastname: capitalized(friends[0].lastname),
-      friendslist: flist
+      firstName: capitalized(friends[0].firstname),
+      lastName: capitalized(friends[0].lastname),
+      friendsList: flist
     }
   },
 
