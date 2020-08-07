@@ -15,7 +15,7 @@ class AddFriend extends React.Component {
       userId: 0,
       firstName: '',
       lastName: '',
-      friendships: [],
+      friendList: [],
       friendFName: '',
       friendLName: '',
       friendEmail: '',
@@ -36,7 +36,7 @@ class AddFriend extends React.Component {
           userId: res.data.id,
           firstName: res.data.firstName,
           lastName: res.data.lastName,
-          friendships: res.data.friendsList
+          friendList: res.data.friendsList
         })
       }).catch(err => {
         console.log(err)
@@ -55,7 +55,7 @@ class AddFriend extends React.Component {
         console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState({
-            friendships: this.state.friendships.concat(this.state.friendFName + ' ' + this.state.friendLName),
+            friendships: this.state.friendList.push({friendId: 0, firstName: this.state.friendFName, lastName: this.state.friendLName}),
             alertType: alertTable.CREATED
           })
           this.resetForm()
@@ -78,12 +78,12 @@ class AddFriend extends React.Component {
 
   handleRemove(item) {
     console.log(item)
-    const newList = this.state.friendships.filter(function(value, index, arr){ return value !== item;});
+    const newList = this.state.friendList.filter(function(value, index, arr){ return value !== item;});
     // const newList = this.state.friendships.filter((item) => this.state.friendships !== item);
     console.log(newList)
     
-    this.setState({friendslist: newList})
-    console.log(this.state.friendslist)
+    this.setState({friendList: newList})
+    console.log(this.state.friendsList)
 
     axios.delete('/api/friendships', item) 
       .then(res => {
@@ -113,7 +113,7 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-          {this.state.friendships.map((item) => (
+          {this.state.friendList.map((item) => (
             <li key={item.friendId}>
               <span>{item.firstName} {item.lastName} </span> 
               <button type="submit" onClick={() => { this.handleRemove(item.friendId) }}>X</button>
