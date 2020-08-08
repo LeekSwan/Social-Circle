@@ -118,7 +118,7 @@ module.exports = {
   removeFriendship: function (userId, friendId) {
     const deleteFriendship = {
       text: 'DELETE FROM friendships WHERE user1 = $1 AND user2 = $2',
-      values: { userId, friendId }
+      values: [userId, friendId]
     }
     return db.query(deleteFriendship)
   },

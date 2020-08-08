@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Button, Spinner, ListGroup } from 'react-bootstrap'
+import { Button, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
@@ -55,7 +55,7 @@ class AddFriend extends React.Component {
         console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState({
-            friendships: this.state.friendList.push({friendId: 0, firstName: this.state.friendFName, lastName: this.state.friendLName}),
+            friendships: this.state.friendList.push({ friendId: 0, firstName: this.state.friendFName, lastName: this.state.friendLName }),
             alertType: alertTable.CREATED
           })
           this.resetForm()
@@ -76,24 +76,19 @@ class AddFriend extends React.Component {
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
-  handleRemove(item) {
-    console.log(item)
-    const newList = this.state.friendList.filter(function(value, index, arr){ return value !== item;});
-    // const newList = this.state.friendships.filter((item) => this.state.friendships !== item);
-    console.log(newList)
-    
-    this.setState({friendList: newList})
-    console.log(this.state.friendsList)
-
-    axios.delete('/api/friendships', item) 
+  handleRemove (id) {
+    const newList = this.state.friendList.filter((item) => item.friendId !== id)
+    this.setState({ friendList: newList })
+    axios.put('/api/friendships', ([this.state.userId, id]))
       .then(res => {
-        console.log('deleted friend')
+        if (res.status >= 200 && res.status < 300) {
+          this.setState({ alertType: alertTable.FRIEND_REMOVED })
+          console.log('deleted friend')
+        }
       })
       .catch(err => {
         console.log(err)
       })
-    
-
   }
 
   handleChange (e) {
@@ -115,9 +110,9 @@ class AddFriend extends React.Component {
         <ul>
           {this.state.friendList.map((item) => (
             <li key={item.friendId}>
-              <span>{item.firstName} {item.lastName} </span> 
-              <button type="submit" onClick={() => { this.handleRemove(item.friendId) }}>X</button>
-            </li> 
+              <span>{item.firstName} {item.lastName} </span>
+              <button type='submit' onClick={() => { this.handleRemove(item.friendId) }}>X</button>
+            </li>
           ))}
         </ul>
 

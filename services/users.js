@@ -91,6 +91,10 @@ async function deleteUserAndFriends (secret) {
   return UserModel.deleteUserAndFriendships(secret)
 }
 
+async function removeFriend (userId, friendId) {
+  return UserModel.removeFriendship(userId, friendId)
+}
+
 async function testDB () {
   return UserModel.getUsers()
 }
@@ -101,5 +105,6 @@ module.exports = {
   addFriend,
   getSocialCircle,
   deleteUserAndFriends,
+  removeFriend,
   testDB
 }

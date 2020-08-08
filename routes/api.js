@@ -50,6 +50,7 @@ api.get('/user/:secret/exposure', async function (req, res) {
 // TODO: check if friend added is the user itself
 api.post('/friendships', async function (req, res) {
   const { userId, firstName, lastName, friendFName, friendLName, friendEmail } = req.body
+  console.log(req.body)
   if (!userId || !firstName || !lastName || !friendFName || !friendLName || !friendEmail) {
     return res.status(400).send('Input field empty')
   }
@@ -77,10 +78,15 @@ api.delete('/user/:secret', function (req, res) {
     })
 })
 
-api.delete('/friendships', function (req, res) {
+api.put('/friendships', async function (req, res) {
   console.log('got to express delete friendship')
-
+  const userId = req.body[0]
+  const friendId = req.body[1]
+  UserService.removeFriend(userId, friendId)
+    .then(() => {
+      res.status(200).send()
+      console.log('Friend removed')
+    })
 })
-
 
 module.exports = api
