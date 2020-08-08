@@ -55,7 +55,7 @@ class AddFriend extends React.Component {
         console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState({
-            friendships: this.state.friendList.push({ friendId: 0, firstName: this.state.friendFName, lastName: this.state.friendLName }),
+            friendships: this.state.friendList.push({ friendId: res.data.rows[0].friendid, firstName: this.state.friendFName, lastName: this.state.friendLName }),
             alertType: alertTable.CREATED
           })
           this.resetForm()

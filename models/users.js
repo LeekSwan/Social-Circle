@@ -44,7 +44,7 @@ module.exports = {
     // populate friendsList
     const flist = []
     if (friends[0].friendfname == null) {
-      flist[0] = 'You currently have no friends'
+      flist.push({ friendId: 0, firstName: 'You currently have no friends' })
     } else {
       for (let i = 0; i < friends.length; i++) {
         flist.push({
@@ -99,7 +99,7 @@ module.exports = {
   // Helper function for /api/friendships to add friends to friendships db
   addFriend: async function (user1, user2) {
     const addFriendship = {
-      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
+      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) RETURNING user2 AS friendId',
       values: [user1, user2]
     }
     return db.query(addFriendship)
