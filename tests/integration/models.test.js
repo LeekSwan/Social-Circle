@@ -72,4 +72,60 @@ describe('UserModel', function () {
       expect(count).to.equal(2)
     })
   })
+
+  describe('.getUserBySecret(...)', function() {
+    it('should return an object containing user data and friends list', async function () {
+      await UserModel.create(...mockUserArgs)
+      const userData = await UserModel.getUserBySecret(mockSecret)
+
+      expect(userData).to.have.length(1)
+      expect(userData[0]).to.include({
+        id: 0,
+        firstname: 'mockfirstname',
+        lastname: 'mocklastname',
+        friendlist: {}
+      })
+    })
+  })
+
+  describe('.getUserIdByEmail(...)', function() {
+    it('should return id of user from email', async function () {
+      await UserModel.create(...mockUserArgs)
+      const userId = await UserModel.getUserIdByEmail(mockEmail)
+      expect(userId).to.equal(0)
+    })
+  })
+
+  describe('.getUserIdBySecret(...)', function() {
+    it('should return id of user from secret', async function () {
+      await UserModel.create(...mockUserArgs)
+      const userId = await UserModel.getUserIdBySecret(mockSecret)
+      expect(userId).to.equal(0)
+    })
+  })
+
+  describe('.checkFriendshipExists(...)', function () {
+    let missingEmail, oneEmail, twoEmail
+    let oneEmailUser, twoEmailUser
+    beforeEach('setup db', async function () {
+      missingEmail = 'missingEmail'
+      oneEmail = 'oneEmail'
+      twoEmail = 'twoEmail'
+      oneEmailUser = [mockFirstName, mockLastName, oneEmail, mockSecret]
+      twoEmailUser = [mockFirstName, mockLastName, twoEmail, mockSecret]
+
+      await Promise.all([
+        UserModel.create(...oneEmailUser),
+        UserModel.create(...twoEmailUser),
+        UserModel.create(...twoEmailUser)
+      ])
+    })
+    
+    it('should return true if friendship exists and false otherwise', async function () {
+      const userId = await UserModel.create(...mockUserArgs)
+      const friendId = await 
+      
+    })
+  })
+
 })
