@@ -92,12 +92,19 @@ async function deleteUserAndFriends (secret) {
   return UserModel.deleteUserAndFriendships(secret)
 }
 
-async function removeFriend (userId, friendId) {
-  return UserModel.removeFriendship(userId, friendId)
+async function removeFriend (userId, friendId, secret) {
+  const authentication = await authenticateUser(userId, secret)
+  if (authentication) {
+    return UserModel.removeFriendship(userId, friendId)
+  }
 }
 
 async function testDB () {
   return UserModel.getUsers()
+}
+
+async function authenticateUser(userId, secret) {
+  return UserModel.authenticateUser(userId, secret)
 }
 
 module.exports = {
@@ -107,5 +114,7 @@ module.exports = {
   getSocialCircle,
   deleteUserAndFriends,
   removeFriend,
-  testDB
+  testDB,
+  authenticateUser
+
 }

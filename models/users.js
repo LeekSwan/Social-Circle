@@ -44,7 +44,7 @@ module.exports = {
     // populate friendsList
     const flist = []
     if (friends[0].friendfname == null) {
-      flist.push({ friendId: 0, firstName: 'You currently have no friends' })
+      flist.push({})
     } else {
       for (let i = 0; i < friends.length; i++) {
         flist.push({
@@ -53,12 +53,13 @@ module.exports = {
           lastName: capitalized(friends[i].friendlname)
         })
       }
+
     }
-    return {
+    return {  
       id: friends[0].id,
       firstName: capitalized(friends[0].firstname),
       lastName: capitalized(friends[0].lastname),
-      friendsList: flist
+      friendList: flist
     }
   },
 
@@ -139,5 +140,15 @@ module.exports = {
     // FROM:  [ { user2: 123}, { user2: 456}, ... ]
     // TO:    [ 123, 456 ]
     return res.rows.map(row => row.user2)
+  },
+
+  //Autheticates user by checking secret and userId. Returns true if both values are returned by query.
+  authenticateUser: async function (userId, secret) {
+    const auth = {
+      text: 'SELECT id, secret FROM users WHERE id = $1 AND secret = $2',
+      values: [userId, secret]
+    }
+    const res = await db.query(auth)
+    return (res.rows.length !== 0)
   }
 }

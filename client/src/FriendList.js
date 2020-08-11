@@ -6,10 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
 import FormAlert from './FormAlert'
-import FriendList from './FriendList'
 import { alertTable } from './constants'
 
-class AddFriend extends React.Component {
+class FriendList extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -121,9 +120,7 @@ class AddFriend extends React.Component {
   render () {
     return (
       <div>
-        <h2>Social Circle</h2>
-        <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
-
+        
         <ul>
          {this.renderList(this.state.friendList)}
         </ul> 
@@ -150,13 +147,7 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-    
-
         <FormAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
-
-        <CountDisplay location={this.props.location} />
-
-        <DeleteButton location={this.props.location} history={this.props.history} />
 
       </div>
     )
@@ -187,4 +178,4 @@ function submitButton () {
   )
 }
 
-export default AddFriend
+export default FriendList

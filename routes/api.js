@@ -68,23 +68,19 @@ api.post('/friendships', async function (req, res) {
 
 // Route for deleting user accounts and friendships
 api.delete('/user/:secret', function (req, res) {
-  console.log('got to delete')
   const { secret } = req.params
   UserService.deleteUserAndFriends(secret)
     .then(() => {
       res.status(200).send()
-      console.log('User deleted')
     })
 })
 
-api.put('/friendships', async function (req, res) {
-  console.log('got to express delete friendship')
-  const userId = req.body[0]
-  const friendId = req.body[1]
-  UserService.removeFriend(userId, friendId)
+api.delete('/friendships/user/:secret', async function (req, res) {
+  const {userId, friendId} = req.body
+  const { secret } = req.params
+  UserService.removeFriend(userId, friendId, secret)
     .then(() => {
       res.status(200).send()
-      console.log('Friend removed')
     })
 })
 
