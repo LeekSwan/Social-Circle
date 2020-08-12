@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 import Login from './Login'
-import AddFriend from './AddFriend'
+import Parent from './Parent'
 import {
   BrowserRouter as Router,
   Route
@@ -13,7 +13,7 @@ class App extends React.Component {
       <Router>
         <div>
           <Route exact path='/' component={Login} />
-          <Route path='/user/:secret' component={AddFriend} />
+          <Route path='/user/:secret' component={Parent} />
         </div>
       </Router>
     )
