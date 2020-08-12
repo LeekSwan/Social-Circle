@@ -76,7 +76,7 @@ api.delete('/user/:secret', function (req, res) {
 })
 
 api.delete('/friendships/user/:secret', async function (req, res) {
-  const {userId, friendId} = req.body
+  const { userId, friendId } = req.body
   const { secret } = req.params
   UserService.removeFriend(userId, friendId, secret)
     .then(() => {

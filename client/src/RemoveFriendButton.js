@@ -18,8 +18,8 @@ class RemoveFriendButton extends React.Component {
   handleShow () { this.setState({ showDelete: true }) };
 
   handleRemove (friendId) {
-    this.props.handleFriendRemoval(friendId)
-    axios.delete(`/api/friendships${this.props.location.pathname}`, { data: { userId: this.props.userId, friendId:  friendId } })
+    this.props.onHandleFriendRemoval(friendId)
+    axios.delete(`/api/friendships${this.props.location.pathname}`, { data: { userId: this.props.userId, friendId: friendId } })
       .catch(err => {
         console.log(err)
       })
@@ -39,7 +39,7 @@ class RemoveFriendButton extends React.Component {
             <Button variant='secondary' onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button variant='danger' onClick={() =>  this.handleRemove(this.props.friendId)  }>
+            <Button variant='danger' onClick={() => this.handleRemove(this.props.friendId)}>
               Unfriend
             </Button>
           </Modal.Footer>

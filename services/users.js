@@ -103,7 +103,7 @@ async function testDB () {
   return UserModel.getUsers()
 }
 
-async function authenticateUser(userId, secret) {
+async function authenticateUser (userId, secret) {
   return UserModel.authenticateUser(userId, secret)
 }
 

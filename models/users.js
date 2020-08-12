@@ -53,9 +53,8 @@ module.exports = {
           lastName: capitalized(friends[i].friendlname)
         })
       }
-
     }
-    return {  
+    return {
       id: friends[0].id,
       firstName: capitalized(friends[0].firstname),
       lastName: capitalized(friends[0].lastname),
@@ -142,7 +141,7 @@ module.exports = {
     return res.rows.map(row => row.user2)
   },
 
-  //Autheticates user by checking secret and userId. Returns true if both values are returned by query.
+  // Autheticates user by checking secret and userId. Returns true if both values are returned by query.
   authenticateUser: async function (userId, secret) {
     const auth = {
       text: 'SELECT id, secret FROM users WHERE id = $1 AND secret = $2',

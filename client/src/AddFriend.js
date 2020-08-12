@@ -76,39 +76,38 @@ class AddFriend extends React.Component {
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
-  renderList(flist) {
+  renderList (flist) {
     if (flist.length >= 1) {
       return (
         flist.map((item) => (
           <li key={item.friendId}>
             <span>{item.firstName} {item.lastName} {item.friendId}</span>
-            <RemoveFriendButton friendId = {item.friendId} userId = {this.state.userId} location={this.props.location} handleFriendRemoval = {this.handleFriendRemoval}/>
+            <RemoveFriendButton friendId={item.friendId} userId={this.state.userId} location={this.props.location} onHandleFriendRemoval={this.handleFriendRemoval} />
           </li>
-        ))  
+        ))
       )
     } else {
-    return (
-      'You have no friends bruv'
-    )}
+      return (
+        'You have no friends bruv'
+      )
+    }
   }
 
   handleChange (e) {
     // handles changes to add friend inputs
     const target = e.target
     const value = target.value
-    const name = target.name  
+    const name = target.name
     this.setState({
       [name]: value
     })
   }
 
-
-  //This is passed as a prop to remove friend button to update friendlist on removal.
-  handleFriendRemoval(friendId) {
+  // This is passed as a prop to remove friend button to update friendlist on removal.
+  handleFriendRemoval (friendId) {
     const newList = this.state.friendList.filter((item) => item.friendId !== friendId)
-    this.setState({ friendList: newList})
+    this.setState({ friendList: newList })
   }
-
 
   render () {
     return (
@@ -117,8 +116,8 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-         {this.renderList(this.state.friendList)}
-        </ul> 
+          {this.renderList(this.state.friendList)}
+        </ul>
 
         <form onSubmit={this.handleAdd}>
           <input
@@ -142,8 +141,6 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-    
-
         <FormAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
 
         <CountDisplay location={this.props.location} />
@@ -154,7 +151,6 @@ class AddFriend extends React.Component {
     )
   }
 }
-
 
 function loadButton () {
   return (
