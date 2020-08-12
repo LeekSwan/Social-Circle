@@ -82,6 +82,9 @@ api.delete('/friendships/user/:secret', async function (req, res) {
     .then(() => {
       res.status(200).send()
     })
+    .catch(err => {
+      res.status(404).send(err)
+    })
 })
 
 module.exports = api

@@ -76,7 +76,7 @@ class AddFriend extends React.Component {
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
-  renderList (flist) {
+  renderFriendList (flist) {
     if (flist.length >= 1) {
       return (
         flist.map((item) => (
@@ -116,7 +116,7 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-          {this.renderList(this.state.friendList)}
+          {this.renderFriendList(this.state.friendList)}
         </ul>
 
         <form onSubmit={this.handleAdd}>

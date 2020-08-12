@@ -144,7 +144,7 @@ module.exports = {
   // Autheticates user by checking secret and userId. Returns true if both values are returned by query.
   authenticateUser: async function (userId, secret) {
     const auth = {
-      text: 'SELECT id, secret FROM users WHERE id = $1 AND secret = $2',
+      text: 'SELECT id FROM users WHERE id = $1 AND secret = $2',
       values: [userId, secret]
     }
     const res = await db.query(auth)
