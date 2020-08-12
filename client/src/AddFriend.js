@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
+import RemoveFriendButton from './RemoveFriendButton'
 import FormAlert from './FormAlert'
-import FriendList from './FriendList'
 import { alertTable } from './constants'
 
 class AddFriend extends React.Component {
@@ -26,7 +26,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.resetForm = this.resetForm.bind(this)
-    this.handleRemove = this.handleRemove.bind(this)
+    this.handleFriendRemoval = this.handleFriendRemoval.bind(this)
   }
 
   componentDidMount () {
@@ -53,7 +53,6 @@ class AddFriend extends React.Component {
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
-        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState({
             friendships: this.state.friendList.push({ friendId: res.data.rows[0].friendid, firstName: this.state.friendFName, lastName: this.state.friendLName }),
@@ -77,34 +76,19 @@ class AddFriend extends React.Component {
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
-  handleRemove (friendId) {
-    const newList = this.state.friendList.filter((item) => item.friendId !== friendId)
-    this.setState({ friendList: newList })
-    axios.delete(`/api/friendships${this.props.location.pathname}`, { data: { userId: this.state.userId, friendId:  friendId } })
-      .then(res => {
-        if (res.status >= 200 && res.status < 300) {
-          this.setState({ alertType: alertTable.FRIEND_REMOVED })
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
   renderList(flist) {
     if (flist.length >= 1) {
       return (
         flist.map((item) => (
           <li key={item.friendId}>
             <span>{item.firstName} {item.lastName} {item.friendId}</span>
-            <button type='submit' onClick={() =>  this.handleRemove(item.friendId)  }>X</button>
+            <RemoveFriendButton friendId = {item.friendId} userId = {this.state.userId} location={this.props.location} handleFriendRemoval = {this.handleFriendRemoval}/>
           </li>
         ))  
       )
     } else {
-      console.log(flist.length)
     return (
-      'flist'
+      'You have no friends bruv'
     )}
   }
 
@@ -112,11 +96,19 @@ class AddFriend extends React.Component {
     // handles changes to add friend inputs
     const target = e.target
     const value = target.value
-    const name = target.name
+    const name = target.name  
     this.setState({
       [name]: value
     })
   }
+
+
+  //This is passed as a prop to remove friend button to update friendlist on removal.
+  handleFriendRemoval(friendId) {
+    const newList = this.state.friendList.filter((item) => item.friendId !== friendId)
+    this.setState({ friendList: newList})
+  }
+
 
   render () {
     return (
