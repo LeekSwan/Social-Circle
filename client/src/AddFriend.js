@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
+import RemoveFriendButton from './RemoveFriendButton'
 import FormAlert from './FormAlert'
 import { alertTable } from './constants'
 
@@ -15,7 +16,7 @@ class AddFriend extends React.Component {
       userId: 0,
       firstName: '',
       lastName: '',
-      friendships: [],
+      friendList: [],
       friendFName: '',
       friendLName: '',
       friendEmail: '',
@@ -25,6 +26,7 @@ class AddFriend extends React.Component {
     this.handleAdd = this.handleAdd.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.resetForm = this.resetForm.bind(this)
+    this.handleFriendRemoval = this.handleFriendRemoval.bind(this)
   }
 
   componentDidMount () {
@@ -33,9 +35,9 @@ class AddFriend extends React.Component {
         console.log(res)
         this.setState({
           userId: res.data.id,
-          firstName: res.data.firstname,
-          lastName: res.data.lastname,
-          friendships: res.data.friendslist
+          firstName: res.data.firstName,
+          lastName: res.data.lastName,
+          friendList: res.data.friendList
         })
       }).catch(err => {
         console.log(err)
@@ -51,15 +53,13 @@ class AddFriend extends React.Component {
     }
     axios.post('/api/friendships', this.state)
       .then(res => {
-        console.log('got to axios.post')
         if (res.status >= 200 && res.status < 300) {
           this.setState({
-            friendships: this.state.friendships.concat(this.state.friendFName + ' ' + this.state.friendLName),
+            friendships: this.state.friendList.push({ friendId: res.data.rows[0].friendid, firstName: this.state.friendFName, lastName: this.state.friendLName }),
             alertType: alertTable.CREATED
           })
           this.resetForm()
         }
-
         // This seems to be clearing the friend name before alert can pass the data into alert component.
         this.setState({ isLoading: false })
       })
@@ -76,6 +76,23 @@ class AddFriend extends React.Component {
 
   resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
 
+  renderFriendList (flist) {
+    if (flist.length >= 1) {
+      return (
+        flist.map((item) => (
+          <li key={item.friendId}>
+            <span>{item.firstName} {item.lastName} {item.friendId}</span>
+            <RemoveFriendButton friendId={item.friendId} userId={this.state.userId} location={this.props.location} onHandleFriendRemoval={this.handleFriendRemoval} />
+          </li>
+        ))
+      )
+    } else {
+      return (
+        'You have no friends bruv'
+      )
+    }
+  }
+
   handleChange (e) {
     // handles changes to add friend inputs
     const target = e.target
@@ -86,6 +103,12 @@ class AddFriend extends React.Component {
     })
   }
 
+  // This is passed as a prop to remove friend button to update friendlist on removal.
+  handleFriendRemoval (friendId) {
+    const newList = this.state.friendList.filter((item) => item.friendId !== friendId)
+    this.setState({ friendList: newList })
+  }
+
   render () {
     return (
       <div>
@@ -93,9 +116,7 @@ class AddFriend extends React.Component {
         <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
 
         <ul>
-          {this.state.friendships.map(item => (
-            <li key={item}>{item}</li>
-          ))}
+          {this.renderFriendList(this.state.friendList)}
         </ul>
 
         <form onSubmit={this.handleAdd}>

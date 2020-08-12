@@ -30,7 +30,7 @@ module.exports = {
   // - getFriendsById
   getUserBySecret: async function (secret) {
     const getUserData = {
-      text: 'SELECT users.id, users.firstname, users.lastname, u.firstname AS friendfname, u.lastname As friendlname ' +
+      text: 'SELECT users.id, users.firstname, users.lastname, f.user2 AS friendId, u.firstname AS friendfname, u.lastname As friendlname ' +
       'FROM users ' +
       'LEFT JOIN friendships AS f ON  f.user1 = users.id ' +
       'LEFT JOIN users as u ON f.user2 = u.id WHERE users.secret = $1',
@@ -44,20 +44,21 @@ module.exports = {
     // populate friendsList
     const flist = []
     if (friends[0].friendfname == null) {
-      flist[0] = 'You currently have no friends'
+      flist.push({})
     } else {
       for (let i = 0; i < friends.length; i++) {
-        const fname = capitalized(friends[i].friendfname)
-        const lname = capitalized(friends[i].friendlname)
-        flist[i] = fname + ' ' + lname
+        flist.push({
+          friendId: friends[i].friendid,
+          firstName: capitalized(friends[i].friendfname),
+          lastName: capitalized(friends[i].friendlname)
+        })
       }
     }
-    // TODO: camelCase this return
     return {
       id: friends[0].id,
-      firstname: capitalized(friends[0].firstname),
-      lastname: capitalized(friends[0].lastname),
-      friendslist: flist
+      firstName: capitalized(friends[0].firstname),
+      lastName: capitalized(friends[0].lastname),
+      friendList: flist
     }
   },
 
@@ -98,7 +99,7 @@ module.exports = {
   // Helper function for /api/friendships to add friends to friendships db
   addFriend: async function (user1, user2) {
     const addFriendship = {
-      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
+      text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2) RETURNING user2 AS friendId',
       values: [user1, user2]
     }
     return db.query(addFriendship)
@@ -117,7 +118,7 @@ module.exports = {
   removeFriendship: function (userId, friendId) {
     const deleteFriendship = {
       text: 'DELETE FROM friendships WHERE user1 = $1 AND user2 = $2',
-      values: { userId, friendId }
+      values: [userId, friendId]
     }
     return db.query(deleteFriendship)
   },
@@ -138,5 +139,15 @@ module.exports = {
     // FROM:  [ { user2: 123}, { user2: 456}, ... ]
     // TO:    [ 123, 456 ]
     return res.rows.map(row => row.user2)
+  },
+
+  // Autheticates user by checking secret and userId. Returns true if both values are returned by query.
+  authenticateUser: async function (userId, secret) {
+    const auth = {
+      text: 'SELECT id FROM users WHERE id = $1 AND secret = $2',
+      values: [userId, secret]
+    }
+    const res = await db.query(auth)
+    return (res.rows.length !== 0)
   }
 }

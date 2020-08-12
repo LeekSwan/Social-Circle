@@ -29,7 +29,13 @@ function displayAlert (alertType, firstName, lastName) {
   } else if (alertType === alertTable.CREATED) {
     return (
       <Alert variant='success'>
-      You are now friends with {firstName} {lastName}
+      You are now friends with {firstName} {lastName}.
+      </Alert>
+    )
+  } else if (alertType === alertTable.FRIEND_REMOVED) {
+    return (
+      <Alert variant='success'>
+      Friend removed.
       </Alert>
     )
   }

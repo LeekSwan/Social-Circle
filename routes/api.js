@@ -54,8 +54,8 @@ api.post('/friendships', async function (req, res) {
     return res.status(400).send('Input field empty')
   }
   UserService.addFriend(userId, firstName, lastName, friendFName, friendLName, friendEmail)
-    .then(() => {
-      res.status(201).send()
+    .then((friendId) => {
+      res.status(201).send(friendId)
     })
     .catch(err => {
       if (err.message === 'friendshipExists') {
@@ -68,12 +68,22 @@ api.post('/friendships', async function (req, res) {
 
 // Route for deleting user accounts and friendships
 api.delete('/user/:secret', function (req, res) {
-  console.log('got to delete')
   const { secret } = req.params
   UserService.deleteUserAndFriends(secret)
     .then(() => {
       res.status(200).send()
-      console.log('User deleted')
+    })
+})
+
+api.delete('/friendships/user/:secret', async function (req, res) {
+  const { userId, friendId } = req.body
+  const { secret } = req.params
+  UserService.removeFriend(userId, friendId, secret)
+    .then(() => {
+      res.status(200).send()
+    })
+    .catch(err => {
+      res.status(404).send(err)
     })
 })
 

@@ -35,6 +35,7 @@ async function addFriend (userId, firstName, lastName, friendFName, friendLName,
   } else {
     const secret = uuidv4()
     friendId = await UserModel.create(friendFName, friendLName, friendEmail, secret)
+    // TODO: get friend first/last name from db instead of passing values
     MailService.sendNewFriendEmail({ firstName, lastName, friendFName, friendLName, friendEmail, secret })
   }
 
@@ -91,8 +92,19 @@ async function deleteUserAndFriends (secret) {
   return UserModel.deleteUserAndFriendships(secret)
 }
 
+async function removeFriend (userId, friendId, secret) {
+  const authentication = await authenticateUser(userId, secret)
+  if (authentication) {
+    return UserModel.removeFriendship(userId, friendId)
+  }
+}
+
 async function testDB () {
   return UserModel.getUsers()
+}
+
+async function authenticateUser (userId, secret) {
+  return UserModel.authenticateUser(userId, secret)
 }
 
 module.exports = {
@@ -101,5 +113,8 @@ module.exports = {
   addFriend,
   getSocialCircle,
   deleteUserAndFriends,
-  testDB
+  removeFriend,
+  testDB,
+  authenticateUser
+
 }
