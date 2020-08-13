@@ -13,10 +13,6 @@ class AddFriend extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      userId: 0,
-      firstName: '',
-      lastName: '',
-      friendList: [],
       friendFName: '',
       friendLName: '',
       friendEmail: '',

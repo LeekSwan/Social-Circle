@@ -2,10 +2,8 @@ import React from 'react'
 import './App.css'
 import Login from './Login'
 import Parent from './Parent'
-import {
-  BrowserRouter as Router,
-  Route
-} from 'react-router-dom'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
+
 
 class App extends React.Component {
   render () {
@@ -14,6 +12,7 @@ class App extends React.Component {
         <div>
           <Route exact path='/' component={Login} />
           <Route path='/user/:secret' component={Parent} />
+
         </div>
       </Router>
     )
