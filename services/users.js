@@ -21,7 +21,6 @@ async function signup (firstName, lastName, email) {
 }
 
 async function login (secret) {
-  // TODO: throw error when secret is unrecognized
   return UserModel.getUserBySecret(secret)
 }
 
