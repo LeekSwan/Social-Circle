@@ -14,7 +14,7 @@ class App extends React.Component {
           <Route exact path='/' component={Login} />
           <Route path='/user/:secret' component={AddFriend} />
           <Route path='/404' component={UserNotFound} />
-          <Route Path= '/500' component={ServerError} />
+          <Route Path='/500' component={ServerError} />
         </div>
       </Router>
     )

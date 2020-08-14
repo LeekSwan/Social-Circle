@@ -25,7 +25,7 @@ async function login (secret) {
   if (userData.id == null) {
     throw new Error('emailRegistered')
   }
- return userData
+  return userData
 }
 
 // TODO: refactor this so it makes more sense
