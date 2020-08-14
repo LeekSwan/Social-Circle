@@ -41,6 +41,15 @@ module.exports = {
     const capitalized = (name) => {
       return name.charAt(0).toUpperCase() + name.slice(1)
     }
+
+    // Checks if query returned data. If not, then user secret is not valid
+    if (friends.length === 0) { 
+      console.log('got to models')
+      return {
+        id: null
+      }
+    }
+
     // populate friendsList
     const flist = []
     if (friends[0].friendfname == null) {
@@ -54,6 +63,7 @@ module.exports = {
         })
       }
     }
+    
     return {
       id: friends[0].id,
       firstName: capitalized(friends[0].firstname),

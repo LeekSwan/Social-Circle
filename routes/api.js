@@ -33,8 +33,11 @@ api.get('/user/:secret', function (req, res) {
       res.status(200).send(userData)
     })
     .catch(err => {
+      if (err.message === 'emailRegistered') {
+        return res.status(404).send()
+      }
       console.log(err)
-      return res.status(404).json(err)
+      return res.status(500).json(err)
     })
 })
 
