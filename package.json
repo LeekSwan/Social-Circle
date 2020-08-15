@@ -12,7 +12,8 @@
     "test": "cross-env NODE_ENV=test mocha --file tests/setupIntegration.js --recursive tests",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "lint": "standard | snazzy",
-    "lint-fix": "standard --fix | snazzy"
+    "lint-fix": "standard --fix | snazzy",
+    "script:setupDatabase": "node scripts/setupDatabaseFromEmpty.js"
   },
   "repository": {
     "type": "git",
