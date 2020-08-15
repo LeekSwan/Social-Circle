@@ -18,7 +18,7 @@ exports.up = (pgm) => {
     mergedUserId: {
       type: 'integer',
       references: '"users"'
-    },
+    }
   })
   pgm.createTable('friendships', {
     id: 'id',
