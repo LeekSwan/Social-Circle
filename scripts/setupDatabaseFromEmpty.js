@@ -7,13 +7,11 @@
 // - comment out script.ssl in db/config.js
 // - drop local database
 
-
 console.log('-----BEGIN script:setupDatabaseFromEmpty-----')
 
 console.log('Loading process.env')
 require('dotenv').config()
 
-const { Client } = require('pg')
 const { getClient } = require('../db/postgres')
 const pgm = require('node-pg-migrate')
 
