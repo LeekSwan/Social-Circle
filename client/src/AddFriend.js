@@ -40,6 +40,9 @@ class AddFriend extends React.Component {
           friendList: res.data.friendList
         })
       }).catch(err => {
+        if (err.response.status === 404) {
+          this.props.history.push({ pathname: '/404' })
+        }
         console.log(err)
       })
   }

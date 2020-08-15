@@ -21,8 +21,11 @@ async function signup (firstName, lastName, email) {
 }
 
 async function login (secret) {
-  // TODO: throw error when secret is unrecognized
-  return UserModel.getUserBySecret(secret)
+  const userData = await UserModel.getUserBySecret(secret)
+  if (userData == null) {
+    throw new Error('invalidSecret')
+  }
+  return userData
 }
 
 // TODO: refactor this so it makes more sense

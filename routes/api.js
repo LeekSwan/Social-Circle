@@ -33,8 +33,11 @@ api.get('/user/:secret', function (req, res) {
       res.status(200).send(userData)
     })
     .catch(err => {
+      if (err.message === 'invalidSecret') {
+        return res.status(404).send()
+      }
       console.log(err)
-      res.status(500).json(err)
+      return res.status(500).json(err)
     })
 })
 
