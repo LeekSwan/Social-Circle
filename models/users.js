@@ -44,10 +44,7 @@ module.exports = {
 
     // Checks if query returned data. If not, then user secret is not valid
     if (friends.length === 0) {
-      console.log('got to models')
-      return {
-        id: null
-      }
+      return null
     }
 
     // populate friendsList

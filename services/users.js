@@ -22,8 +22,8 @@ async function signup (firstName, lastName, email) {
 
 async function login (secret) {
   const userData = await UserModel.getUserBySecret(secret)
-  if (userData.id == null) {
-    throw new Error('emailRegistered')
+  if (userData == null) {
+    throw new Error('invalidSecret')
   }
   return userData
 }
