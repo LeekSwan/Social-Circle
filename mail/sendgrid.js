@@ -5,4 +5,10 @@
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-module.exports = sgMail
+function send (msg) {
+  if (process.env.SEND_EMAIL === 'true') {
+    return sgMail.send(msg)
+  }
+}
+
+module.exports = { send }
