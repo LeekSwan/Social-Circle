@@ -19,7 +19,7 @@ async function getClient () {
     return client
   } catch (err) {
     console.log('Error when connecting to PG:')
-    console.err(err.message)
+    console.log(err.message)
     return null
   }
 }

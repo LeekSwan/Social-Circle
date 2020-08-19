@@ -14,6 +14,10 @@ exports.up = (pgm) => {
       type: 'timestamptz',
       notNull: true,
       default: pgm.func('current_timestamp')
+    },
+    mergedUserId: {
+      type: 'integer',
+      references: '"users"'
     }
   })
   pgm.createTable('friendships', {
