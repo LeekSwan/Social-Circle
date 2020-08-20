@@ -21,9 +21,9 @@ const dbConfig = {
   },
   script: {
     connectionString: process.env.PG_CONNECTION_STRING,
-    ssl: {
-      rejectUnauthorized: false
-    }
+    // ssl: {
+    //   rejectUnauthorized: false
+    // }
   }
 }
 

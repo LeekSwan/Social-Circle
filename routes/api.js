@@ -90,4 +90,8 @@ api.delete('/friendships/user/:secret', async function (req, res) {
     })
 })
 
+api.put('/user/:secret', function(req, res) {
+
+})
+
 module.exports = api
