@@ -154,5 +154,21 @@ module.exports = {
     }
     const res = await db.query(auth)
     return (res.rows.length !== 0)
+  },
+
+  mergeAccounts: async function (ogUserId, mergeSecret) {
+    const merge = {
+      text: 'UPDATE users SET mergedUserId = $1 WHERE id = $2',
+      values: [ogUserId, mergeSecret]
+    }
+    return db.query(merge) 
+  },
+
+  mergeFriends: async function (secret, mergeSecret) {
+    const merge = {
+      text: '',
+      values: [secret, mergeSecret]
+    }
+    
   }
 }

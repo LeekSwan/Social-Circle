@@ -36,15 +36,15 @@ class DeleteButton extends React.Component {
   }
   handleMerge (e) {
     console.log(this.state.mergeUrl)
-    // axios.put(`/api${this.props.location.pathname}`)
-    //   .then(res => {
-    //     console.log('got to delete.then')
-    //   })
+    axios.put(`/api${this.props.location.pathname}`, { mergeUrl: this.state.mergeUrl })
+      .then(res => {
+        //TODO: add alert for bad url
+        console.log('got to delete.then')
+      })
   }
 
   handleChange(e) {
     this.setState({mergeUrl: e.target.value })
-    console.log(e.target.value)
   }
 
 
@@ -101,7 +101,7 @@ class DeleteButton extends React.Component {
                         <Button variant="secondary" onClick={this.handleCloseMerge}>
                             Cancel
                         </Button>
-                        <Button variant="danger" onClick={this.handleMerge}>
+                        <Button variant="danger" onClick={() => {this.handleMerge(); this.handleCloseMerge();}}>
                             Merge
                         </Button>
                     </Modal.Footer>

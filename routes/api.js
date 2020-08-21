@@ -91,7 +91,19 @@ api.delete('/friendships/user/:secret', async function (req, res) {
 })
 
 api.put('/user/:secret', function(req, res) {
-
+  const { secret } = req.params
+  const { mergeUrl } = req.body
+  const mergeSecret = mergeUrl.split("/user/")[1]
+  if (mergeSecret == undefined) {
+    return res.status(400).send('Bad url')
+  }
+  UserService.mergeAccounts(secret, mergeSecret)
+  // .then(() => {
+  //   res.status(200).send()
+  // })
+  // .catch(err => {
+  //   res.status(404).send(err)
+  // })
 })
 
 module.exports = api

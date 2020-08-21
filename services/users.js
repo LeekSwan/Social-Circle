@@ -96,10 +96,21 @@ async function deleteUserAndFriends (secret) {
 }
 
 async function removeFriend (userId, friendId, secret) {
-  const authentication = await authenticateUser(userId, secret)
+  const authentication = await UserModel.authenticateUser(userId, secret)
   if (authentication) {
     return UserModel.removeFriendship(userId, friendId)
   }
+}
+
+async function mergeAccounts (secret, mergeSecret) {
+  console.log(secret)
+  console.log(mergeSecret)
+  // get user id of og acc and add user id to mergeSecret column of old account
+  const ogUserId = await UserModel.getUserIdBySecret(secret)
+  UserModel.mergeAccounts(ogUserId, mergeSecret)
+
+  // Change all friendships of old account to point to og accounts user id
+  // Make sure that there are no duplicates
 }
 
 async function testDB () {
@@ -117,6 +128,7 @@ module.exports = {
   getSocialCircle,
   deleteUserAndFriends,
   removeFriend,
+  mergeAccounts,
   testDB,
   authenticateUser
 
