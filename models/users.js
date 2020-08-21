@@ -164,11 +164,20 @@ module.exports = {
     return db.query(merge) 
   },
 
-  mergeFriends: async function (secret, mergeSecret) {
+  mergeFriends: async function (ogUserId, oldUserId) {
     const merge = {
-      text: '',
-      values: [secret, mergeSecret]
+      text: 'UPDATE friendships SET user1 = $1 WHERE user1 = $2',
+      values: [ogUserId, oldUserId]
     }
-    
+    return db.query(merge)
+  },
+
+  removeDuplicateFriends: async function (userId) {
+    const removeDup = {
+      text: 'DELETE FROM friendships a WHERE a.ctid <> '+
+      '(SELECT min(b.ctid) FROM friendships b WHERE  a.user2 = b.user2 AND a.user1 = $1 AND b.user1 = $1)',
+      values: [userId]
+    }
+    return db.query(removeDup)
   }
 }

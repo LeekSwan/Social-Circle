@@ -105,12 +105,18 @@ async function removeFriend (userId, friendId, secret) {
 async function mergeAccounts (secret, mergeSecret) {
   console.log(secret)
   console.log(mergeSecret)
-  // get user id of og acc and add user id to mergeSecret column of old account
+
+  // Get user id of og acc and add user id to mergeSecret column of old account
   const ogUserId = await UserModel.getUserIdBySecret(secret)
   UserModel.mergeAccounts(ogUserId, mergeSecret)
 
   // Change all friendships of old account to point to og accounts user id
   // Make sure that there are no duplicates
+  const oldUserId = await UserModel.getUserIdBySecret(mergeSecret)
+  UserModel.mergeFriends(ogUserId, oldUserId)
+
+  // Remove duplicate friendships after merge
+  UserModel.removeDuplicateFriends(ogUserId)
 }
 
 async function testDB () {

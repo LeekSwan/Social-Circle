@@ -39,7 +39,8 @@ class DeleteButton extends React.Component {
     axios.put(`/api${this.props.location.pathname}`, { mergeUrl: this.state.mergeUrl })
       .then(res => {
         //TODO: add alert for bad url
-        console.log('got to delete.then')
+        //TODO: add alert on success
+        console.log('got to delete.then') 
       })
   }
 
