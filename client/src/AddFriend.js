@@ -44,10 +44,9 @@ class AddFriend extends React.Component {
       }).catch(err => {
         if (err.response.status === 404) {
           this.props.history.push({ pathname: '/404' })
-        } 
-        else if (err.response.status === 500) {
+        } else if (err.response.status === 500) {
           this.props.history.push({ pathname: '/500' })
-        } 
+        }
         console.log(err)
       })
   }

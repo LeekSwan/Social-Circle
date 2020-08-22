@@ -103,8 +103,11 @@ async function removeFriend (userId, friendId, secret) {
 }
 
 async function mergeAccounts (secret, mergeSecret) {
-  console.log(secret)
-  console.log(mergeSecret)
+  // makes sure that the mergeSecret passed is a valid user in db
+  const checkMergeSecret = await UserModel.getUserIdBySecret(mergeSecret)
+  if (checkMergeSecret === null) {
+    throw new Error('Invalid user account')
+  }
 
   // Get user id of og acc and add user id to mergeSecret column of old account
   const ogUserId = await UserModel.getUserIdBySecret(secret)
