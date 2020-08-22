@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* YourName.js */
+.name-container {
+  & span {
+    font-size: 1.83em;
+    font-weight: bold;
+  }
+  .name-edit-button {
+    margin-left: 10px;
+  }
+}

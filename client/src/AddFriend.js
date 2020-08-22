@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Button, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import YourName from './YourName'
 import CountDisplay from './CountDisplay'
 import DeleteButton from './DeleteButton'
 import RemoveFriendButton from './RemoveFriendButton'
@@ -116,7 +117,12 @@ class AddFriend extends React.Component {
     return (
       <div>
         <h2>Social Circle</h2>
-        <h5>Hi ***{this.state.userId}*** {this.state.firstName} {this.state.lastName}! Add your friends below.</h5>
+        <YourName
+          userId={ this.state.userId }
+          firstName={ this.state.firstName }
+          lastName={ this.state.lastName }
+          onChange={ (firstName, lastName) => this.setState({ firstName, lastName}) } />
+        <h5>Add your friends below.</h5>
 
         <ul>
           {this.renderFriendList(this.state.friendList)}

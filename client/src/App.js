@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.css'
+import './App.scss'
 import Login from './Login'
 import UserNotFound from './UserNotFound'
 import ServerError from './ServerError'
