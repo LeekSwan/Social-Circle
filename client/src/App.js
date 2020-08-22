@@ -11,6 +11,7 @@ class App extends React.Component {
     return (
       <Router>
         <div>
+          <h2>Social Circle</h2>
           <Route exact path='/' component={Login} />
           <Route path='/user/:secret' component={AddFriend} />
           <Route path='/404' component={UserNotFound} />
