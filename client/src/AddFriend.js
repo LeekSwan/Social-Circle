@@ -13,6 +13,7 @@ class AddFriend extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      componentDidMount: false,
       userId: 0,
       firstName: '',
       lastName: '',
@@ -39,6 +40,7 @@ class AddFriend extends React.Component {
           lastName: res.data.lastName,
           friendList: res.data.friendList
         })
+        this.setState({ componentDidMount: true })
       }).catch(err => {
         if (err.response.status === 404) {
           this.props.history.push({ pathname: '/404' })
@@ -47,37 +49,43 @@ class AddFriend extends React.Component {
       })
   }
 
-  // TODO: prevent page reload on empty input
-  handleAdd (e) {
-    // check for empty inputs
-    this.setState({ isLoading: true })
-    if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
-      return this.setState({ alertType: alertTable.EMPTY_FIELD })
-    }
-    axios.post('/api/friendships', this.state)
-      .then(res => {
-        if (res.status >= 200 && res.status < 300) {
-          this.setState({
-            friendships: this.state.friendList.push({ friendId: res.data.rows[0].friendid, firstName: this.state.friendFName, lastName: this.state.friendLName }),
-            alertType: alertTable.CREATED
-          })
-          this.resetForm()
-        }
-        // This seems to be clearing the friend name before alert can pass the data into alert component.
-        this.setState({ isLoading: false })
-      })
-      .catch(err => {
-        if (err.response.status === 409) {
-          this.setState({ alertType: alertTable.FRIEND_EXISTS, isLoading: false })
-          this.resetForm()
-        }
-        console.log(err)
-      })
+  async handleAdd (e) {
     e.preventDefault()
-    e.target.reset()
+    e.persist()
+    this.setState({ isLoading: true })
+
+    // check for empty inputs
+    if (!this.state.friendFName || !this.state.friendLName || !this.state.friendEmail) {
+      this.resetForm(e)
+      return this.setState({ isLoading: false, alertType: alertTable.EMPTY_FIELD })
+    }
+
+    try {
+      const res = await axios.post('/api/friendships', this.state)
+      this.state.friendList.push({
+        friendId: res.data.rows[0].friendid,
+        firstName: this.state.friendFName,
+        lastName: this.state.friendLName
+      })
+      this.setState({
+        friendships: this.state.friendList,
+        alertType: alertTable.CREATED
+      })
+      this.resetForm(e)
+    } catch (err) {
+      console.log(err)
+      if (err.status === 409) {
+        this.setState({ alertType: alertTable.FRIEND_EXISTS })
+      }
+    }
+
+    this.setState({ isLoading: false })
   }
 
-  resetForm () { this.setState({ friendFName: '', friendLName: '', friendEmail: '' }) }
+  resetForm (e) {
+    e.target.reset()
+    this.setState({ friendFName: '', friendLName: '', friendEmail: '' })
+  }
 
   renderFriendList (flist) {
     if (flist.length >= 1) {
@@ -113,6 +121,19 @@ class AddFriend extends React.Component {
   }
 
   render () {
+    if (!this.state.componentDidMount) {
+      return (
+        <div className='spinner-container'>
+          <Spinner
+            variant='primary'
+            as='span'
+            animation='border'
+            role='status'
+            aria-hidden='true'
+          />
+        </div>
+      )
+    }
     return (
       <div>
         <h2>Social Circle</h2>
@@ -144,7 +165,7 @@ class AddFriend extends React.Component {
           {this.state.isLoading ? loadButton() : submitButton()}
         </form>
 
-        <FormAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendFName} />
+        <FormAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendLName} />
 
         <CountDisplay location={this.props.location} />
 

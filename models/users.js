@@ -49,9 +49,7 @@ module.exports = {
 
     // populate friendsList
     const flist = []
-    if (friends[0].friendfname == null) {
-      flist.push({})
-    } else {
+    if (friends[0].friendfname) {
       for (let i = 0; i < friends.length; i++) {
         flist.push({
           friendId: friends[i].friendid,
