@@ -160,18 +160,26 @@ module.exports = {
     return (res.rows.length !== 0)
   },
 
-  mergeAccounts: async function (ogUserId, mergeSecret) {
+  getMergedUserId: async function (userId) {
+    const getMergeUserId = {
+      text: 'SELECT mergeduserid FROM users WHERE id = $1',
+      values: [userId]
+    }
+    return db.query(getMergeUserId)
+  },
+
+  mergeAccounts: async function (mergeUserId, ogUserId) {
     const merge = {
-      text: 'UPDATE users SET mergedUserId = $1 WHERE secret = $2',
-      values: [ogUserId, mergeSecret]
+      text: 'UPDATE users SET mergedUserId = $2 WHERE id = $1',
+      values: [mergeUserId, ogUserId]
     }
     return db.query(merge)
   },
 
-  mergeFriends: async function (ogUserId, oldUserId) {
+  mergeFriends: async function (mergeUserId, ogUserId) {
     const merge = {
-      text: 'UPDATE friendships SET user1 = $1 WHERE user1 = $2',
-      values: [ogUserId, oldUserId]
+      text: 'UPDATE friendships SET user1 = $2 WHERE user1 = $1',
+      values: [mergeUserId, ogUserId]
     }
     return db.query(merge)
   },

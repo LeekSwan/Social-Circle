@@ -4,7 +4,7 @@ import { Button, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
-import DeleteButton from './DeleteButton'
+import Settings from './Settings'
 import RemoveFriendButton from './RemoveFriendButton'
 import FormAlert from './FormAlert'
 import { alertTable } from './constants'
@@ -171,7 +171,7 @@ class AddFriend extends React.Component {
 
         <CountDisplay location={this.props.location} />
 
-        <DeleteButton location={this.props.location} history={this.props.history} />
+        <Settings location={this.props.location} history={this.props.history} />
 
       </div>
     )

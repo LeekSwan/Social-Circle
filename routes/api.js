@@ -94,17 +94,20 @@ api.put('/user/:secret', function (req, res) {
   const { secret } = req.params
   const { mergeUrl } = req.body
   const mergeSecret = mergeUrl.split('/user/')[1]
-  if (mergeSecret === undefined || secret === mergeSecret) {
+  if (secret === undefined || secret === mergeSecret) {
     return res.status(400).send('Bad url')
   }
-  UserService.mergeAccounts(secret, mergeSecret)
+
+  const userIds = UserService.getUserIdsFromSecrets([mergeSecret, secret])
+  if (userIds.mergeSecret === null) {
+    return res.status(404).send()
+  }
+
+  UserService.mergeAccounts(userIds.mergeSecret, userIds.secret)
     .then(() => {
       res.status(200).send()
     })
     .catch(err => {
-      if (err.message === 'Invalid user account') {
-        return res.status(404).send()
-      }
       console.log(err)
       return res.status(500).json(err)
     })
