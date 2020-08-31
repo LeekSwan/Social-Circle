@@ -1,5 +1,6 @@
 const api = require('express').Router()
 const UserService = require('../services/users')
+const UserMergeService = require('../services/UserMergeService')
 const bodyParser = require('body-parser')
 api.use(bodyParser.json())
 
@@ -90,20 +91,19 @@ api.delete('/friendships/user/:secret', async function (req, res) {
     })
 })
 
-api.put('/user/:secret', function (req, res) {
+api.put('/user/:secret', async function (req, res) {
   const { secret } = req.params
   const { mergeUrl } = req.body
   const mergeSecret = mergeUrl.split('/user/')[1]
-  if (secret === undefined || secret === mergeSecret) {
+  if (mergeSecret === undefined || secret === mergeSecret) {
     return res.status(400).send('Bad url')
   }
 
-  const userIds = UserService.getUserIdsFromSecrets([mergeSecret, secret])
+  const userIds = await UserService.getUserIdsFromSecrets([mergeSecret, secret])
   if (userIds.mergeSecret === null) {
     return res.status(404).send()
   }
-
-  UserService.mergeAccounts(userIds.mergeSecret, userIds.secret)
+  UserMergeService.mergeAccounts(userIds[mergeSecret], userIds[secret])
     .then(() => {
       res.status(200).send()
     })

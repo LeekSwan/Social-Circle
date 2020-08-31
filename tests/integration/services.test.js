@@ -1,7 +1,9 @@
 const { UserMergeService } = require('../../services/UserMergeService')
+const UserModel = require('../../models/users')
 
 const { expect } = require('chai')
-const { deleteAllUsers, insertUser } = require('./utils')
+const { deleteAllUsers, insertUser, getUser, addFriend, checkFriendshipExists } = require('./utils')
+
 
 describe.skip('UserMergeService', function () {
   describe('.mergeAcounts(...)', function () {
@@ -11,14 +13,15 @@ describe.skip('UserMergeService', function () {
     // merged (child) account --> mergedUserId !== null
     // OG (parent) account --> len(SELECT * FROM users WHERE mergedUserId === thisUserId) > 0
     it('should correctly merge for two unlinked accounts', async () => {
-      let user1, user2
-      // TODO: insert user1, user2 into database
-      await insertUser({ userid: 1, mergeduserId: null })
-      await insertUser({ userid: 2, mergeduserId: null })
+      const userId1 = 1; const userId2 = 2
 
-      await UserMergeService.mergeAccounts(user1, user2)
+      await insertUser({ userid: userId1, mergeduserId: null })
+      await insertUser({ userid: userId2, mergeduserId: null })
 
-      // TODO: get user1/user2 from database
+      await UserMergeService.mergeAccounts(userId1, userId2)
+
+      let user1 = getUser(userId1); let user2 = getUser(userId2)
+      
 
       // expect user1 to be merged
       expect(user1.mergeduserid).to.equal(user2.userid)
@@ -38,18 +41,36 @@ describe.skip('UserMergeService', function () {
 
       await UserMergeService.mergeAccounts(ogUser1, ogUser2)
 
-      // TODO: get from db
-      const newParent = ogUser2
-      const [newChild1, newChild2, newChild3] = [ogUser1, mergedUser1, mergedUser2]
+      const newParent = getUser(ogUser2)
+      const newChild1 = getUser(ogUser1); const newChild2 = getUser(mergedUser1); const newChild3 = getUser(mergedUser2)
       expect(newChild1.mergeduserid).to.equal(newParent.userid)
       expect(newChild2.mergeduserid).to.equal(newParent.userid)
       expect(newChild3.mergeduserid).to.equal(newParent.userid)
       expect(newParent.mergeduserid).to.be.null()
     })
+    it('should correctly merge friends of an OG (parent) account into another parent account', async () => {
+      const ogUser1 = 1; const ogUser2 = 2; const friend1 = 11
+      // ogUser1 is being merged to ogUser2. friend1 is origionally a friend of ogUser1. 
+
+      await insertUser({ userid: ogUser1, mergeduserId: null })
+      await insertUser({ userid: ogUser2, mergeduserId: null })
+      await insertUser({ userid: friend1, mergeduserId: null })
+
+      addFriend(ogUser1, friend1)
+      await UserMergeService.mergeAccounts(ogUser1, ogUser2)
+
+      const newParentFriendship = checkFriendshipExists(ogUser2, friend1)
+      const newChildFriendship = checkFriendshipExists(ogUser1, friend1)
+      expect(newParentFriendship).to.be.true
+      expect(newChildFriendship).to.be.false
+    })
     it('should throw when trying to merge a merged (child) account into any account', async () => {
-      let ogUser, mergedUser, unmergedUser
-      // ogUser1 is parent of mergedUser1 --> expect(mergedUser1.mergedUserId).to.equal(ogUser1.userId)
-      // TODO: insert into db
+      const ogUserId = 1; const mergedUserId = 2; const unmergedUserId = 3
+      // ogUser is parent of mergedUser --> expect(mergedUser.mergedUserId).to.equal(ogUser.userId)
+
+      await insertUser({ userid: ogUserId, mergeduserId: null })
+      await insertUser({ userid: mergedUserId, mergeduserId: 1 })
+      await insertUser({ userid: unmergedUserId, mergeduserId: null })
 
       expect(async () => {
         await UserMergeService.mergeAccounts(mergedUser, unmergedUser)
@@ -62,9 +83,12 @@ describe.skip('UserMergeService', function () {
     it('should throw when trying to merge any account into a merged (child) account', async () => {
       // this should never happen btw
 
-      let ogUser, mergedUser, unmergedUser
+      const ogUserId = 1; const mergedUserId = 2; const unmergedUserId = 3
       // ogUser1 is parent of mergedUser1 --> expect(mergedUser1.mergedUserId).to.equal(ogUser1.userId)
-      // TODO: insert into db
+      
+      await insertUser({ userid: ogUserId, mergeduserId: null })
+      await insertUser({ userid: mergedUserId, mergeduserId: 1 })
+      await insertUser({ userid: unmergedUserId, mergeduserId: null })
 
       expect(async () => {
         await UserMergeService.mergeAccounts(ogUser, mergedUser)

@@ -165,12 +165,21 @@ module.exports = {
       text: 'SELECT mergeduserid FROM users WHERE id = $1',
       values: [userId]
     }
-    return db.query(getMergeUserId)
+    const res = await db.query(getMergeUserId)
+    return res.rows[0].mergeduserid
   },
 
   mergeAccounts: async function (mergeUserId, ogUserId) {
     const merge = {
-      text: 'UPDATE users SET mergedUserId = $2 WHERE id = $1',
+      text: 'UPDATE users SET mergeduserid = $2 WHERE id = $1',
+      values: [mergeUserId, ogUserId]
+    }
+    return db.query(merge)
+  },
+
+  mergeChildAccounts: async function (mergeUserId, ogUserId) {
+    const merge = {
+      text: 'UPDATE users SET mergeduserid = $2 WHERE mergeduserid = $1',
       values: [mergeUserId, ogUserId]
     }
     return db.query(merge)

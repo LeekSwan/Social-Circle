@@ -103,37 +103,10 @@ async function removeFriend (userId, friendId, secret) {
   }
 }
 
-async function mergeAccounts (mergeUserId, ogUserId) {
-  // mergeUserId = account being merged and will become child of og account
-  // orUserId = account that is being merged to and will become parent of merged account and all its childs
-
-  // Checks if account has already been merged. If so, throw "This account has already been merged" error
-  const isMerged = await UserModel.getMergedUserId(mergeUserId)
-  if (isMerged) { 
-    console.log('account has been merged')
-    throw new Error('accountHasBeenMerged')
-  }
-  // Change mergeduserid field of account being merged to be ogUserId
-  // Change all mergeduserid field of child accounts that pointed to mergeUserId to point to ogUserId
-
-  // Change all friendships that points to mergeUserId to ogUserId
-  // Remove duplicate friendships after merge
-
-  // Adds ogUserId to mergeduserid field of merged account
-  UserModel.mergeAccounts(mergeUserId, ogUserId)
-
-  // Change all friendships of old account to point to og accounts user id
-  // Make sure that there are no duplicates
-  UserModel.mergeFriends(mergeUserId, ogUserId)
-
-  // Remove duplicate friendships after merge
-  UserModel.removeDuplicateFriends(ogUserId)
-}
-
-async function getUserIdsFromSecrets ([secrets]) {
+async function getUserIdsFromSecrets (secrets) {
   const userIds = {}
   for (let i = 0; i < secrets.length; i++) {
-    userIds[secrets[i]] = UserModel.getUserIdBySecret(secrets[i])
+    userIds[secrets[i]] = await UserModel.getUserIdBySecret(secrets[i])
   }
   return userIds
 }
@@ -153,7 +126,6 @@ module.exports = {
   getSocialCircle,
   deleteUserAndFriends,
   removeFriend,
-  mergeAccounts,
   getUserIdsFromSecrets,
   testDB,
   authenticateUser
