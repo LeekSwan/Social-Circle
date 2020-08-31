@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import MergeAlert from './MergeAlerts'
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 
 class MergeButton extends React.Component {
@@ -11,10 +12,12 @@ class MergeButton extends React.Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleMerge = this.handleMerge.bind(this)
+    this.handleShowMerge = this.handleShowMerge.bind(this)
+    this.handleCloseMerge = this.handleCloseMerge.bind(this)
   }
 
-  handleShowMerge = () => { this.setState({ showMerge: true }) }
-  handleCloseMerge = () => { this.setState({ showMerge: false }) };
+  handleShowMerge () { this.setState({ showMerge: true }) }
+  handleCloseMerge () { this.setState({ showMerge: false }) }
   handleMerge (e) {
     axios.put(`/api${this.props.location.pathname}`, { mergeUrl: this.state.mergeUrl })
       .then(res => {
@@ -60,7 +63,9 @@ class MergeButton extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
+        <MergeAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendLName} />
       </div>
+
     )
   }
 }

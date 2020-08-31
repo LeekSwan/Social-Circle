@@ -20,7 +20,7 @@ function insertUser (values) {
   return db.query(insertUser)
 }
 
-function getUser(userId) {
+async function getUser (userId) {
   const getUser = {
     text: 'SELECT * FROM users WHERE id = $1',
     values: [userId]
@@ -30,7 +30,7 @@ function getUser(userId) {
   return user.rows[0]
 }
 
-function addFriend(user1, user2) {
+function addFriend (user1, user2) {
   const addFriendship = {
     text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
     values: [user1, user2]
@@ -38,7 +38,7 @@ function addFriend(user1, user2) {
   return db.query(addFriendship)
 }
 
-function checkFriendshipExists(user1, user2) {
+async function checkFriendshipExists (user1, user2) {
   const checkFriendship = {
     text: 'SELECT * FROM friendships where user1 = $1 AND user2 = $2',
     values: [user1, user2]

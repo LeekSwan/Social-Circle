@@ -9,10 +9,12 @@ class DeleteButton extends React.Component {
       showDelete: false
     }
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleCloseDelete = this.handleCloseDelete.bind(this)
+    this.handleShowDelete = this.handleShowDelete.bind(this)
   }
 
-  handleShowDelete = () => { this.setState({ showDelete: true }) }
-  handleCloseDelete = () => { this.setState({ showDelete: false }) };
+  handleShowDelete () { this.setState({ showDelete: true }) };
+  handleCloseDelete () { this.setState({ showDelete: false }) };
   handleDelete (e) {
     axios.delete(`/api${this.props.location.pathname}`)
       .then(res => {

@@ -7,7 +7,7 @@ async function mergeAccounts (mergeUserId, ogUserId) {
   // Checks if account has already been merged. If is not null, throw "This account has already been merged" error
   const mergeIsMerged = await UserModel.getMergedUserId(mergeUserId)
   const ogIsMerged = await UserModel.getMergedUserId(ogUserId)
-  if (mergeIsMerged || ogIsMerged) { 
+  if (mergeIsMerged || ogIsMerged) {
     throw new Error('accountHasBeenMerged')
   }
 
