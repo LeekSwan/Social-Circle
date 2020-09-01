@@ -6,36 +6,35 @@ class Alerts extends React.Component {
   render () {
     return (
       <div>
-        {displayAlert(this.props.alertType, this.props.firstName, this.props.lastName)}
+        {displayAlert(this.props.alertType)}
       </div>
     )
   }
 }
 
-// TODO: Set a 2 second timer to display alert before it disapears
-function displayAlert (alertType, firstName, lastName) {
-  if (alertType === alertTable.FRIEND_EXISTS) {
+function displayAlert (alertType) {
+  if (alertType === alertTable.MERGED) {
+    return (
+      <Alert variant='success'>
+      Account has been successfully merged.
+      </Alert>
+    )
+  } else if (alertType === alertTable.BAD_URL) {
     return (
       <Alert variant='danger'>
-      You are already friends with this person.
+      Invalid URL.
       </Alert>
     )
-  } else if (alertType === alertTable.EMPTY_FIELD) {
+  } else if (alertType === alertTable.NONEXISTENT_ACCOUNT) {
     return (
-      <Alert variant='warning'>
-      Please fill all fields.
+      <Alert variant='danger'>
+      This account does not exist.
       </Alert>
     )
-  } else if (alertType === alertTable.CREATED) {
+  } else if (alertType === alertTable.ALREADY_MERGED) {
     return (
-      <Alert variant='success'>
-      You are now friends with {firstName} {lastName}.
-      </Alert>
-    )
-  } else if (alertType === alertTable.FRIEND_REMOVED) {
-    return (
-      <Alert variant='success'>
-      Friend removed.
+      <Alert variant='danger'>
+      This account has already been merged. Please choose an unmerged account.
       </Alert>
     )
   }

@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import MergeAlert from './MergeAlerts'
+import { alertTable } from './constants'
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 
 class MergeButton extends React.Component {
@@ -8,7 +9,8 @@ class MergeButton extends React.Component {
     super(props)
     this.state = {
       showMerge: false,
-      mergeUrl: ''
+      mergeUrl: '',
+      alertType: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleMerge = this.handleMerge.bind(this)
@@ -21,11 +23,19 @@ class MergeButton extends React.Component {
   handleMerge (e) {
     axios.put(`/api${this.props.location.pathname}`, { mergeUrl: this.state.mergeUrl })
       .then(res => {
-        // TODO: add alert for bad url
-        // TODO: add alert on success
-        // TODO: add alert for an already merged account
         // TODO: Edge Case - merging an old account who has og account as a friend
-        console.log('got to delete.then')
+        if (res.status >= 200 && res.status < 300) {
+          return this.setState({ alertType: alertTable.MERGED })
+        }
+      })
+      .catch(err => {
+        if (err.response.status === 400) {
+          return this.setState({ alertType: alertTable.BAD_URL })
+        } else if (err.response.status === 404) {
+          return this.setState({ alertType: alertTable.NONEXISTENT_ACCOUNT })
+        } else if (err.response.status === 409) {
+          return this.setState({ alertType: alertTable.ALREADY_MERGED })
+        }
       })
   }
 
@@ -43,7 +53,10 @@ class MergeButton extends React.Component {
           <Modal.Header closeButton>
             <Modal.Title>Merge Accounts</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Please input the url of your old account that you would like to merge to your current one.</Modal.Body>
+          <Modal.Body>Please input the url of your old account that you would like to merge to your current one.
+            Merging your old account transfers all friends to your current account. Please
+            note that once merged, you will not be able to access your old account.
+          </Modal.Body>
           <InputGroup className='mb-3'>
             <InputGroup.Prepend>
               <InputGroup.Text id='basic-addon1'>Url</InputGroup.Text>
@@ -58,14 +71,15 @@ class MergeButton extends React.Component {
             <Button variant='secondary' onClick={this.handleCloseMerge}>
                       Cancel
             </Button>
-            <Button variant='danger' onClick={() => { this.handleMerge(); this.handleCloseMerge() }}>
+            <Button variant='danger' onClick={this.handleMerge}>
                       Merge
             </Button>
           </Modal.Footer>
-        </Modal>
-        <MergeAlert alertType={this.state.alertType} firstName={this.state.friendFName} lastName={this.state.friendLName} />
-      </div>
 
+          <MergeAlert alertType={this.state.alertType} />
+
+        </Modal>
+      </div>
     )
   }
 }

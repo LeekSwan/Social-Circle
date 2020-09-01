@@ -51,6 +51,7 @@ api.get('/user/:secret/exposure', async function (req, res) {
     })
 })
 
+// Route for adding friendships
 // TODO: check if friend added is the user itself
 api.post('/friendships', async function (req, res) {
   const { userId, firstName, lastName, friendFName, friendLName, friendEmail } = req.body
@@ -79,6 +80,7 @@ api.delete('/user/:secret', function (req, res) {
     })
 })
 
+// Route for removing friendship
 api.delete('/friendships/user/:secret', async function (req, res) {
   const { userId, friendId } = req.body
   const { secret } = req.params
@@ -91,16 +93,22 @@ api.delete('/friendships/user/:secret', async function (req, res) {
     })
 })
 
+// Route for merging accounts
 api.put('/user/:secret', async function (req, res) {
   const { secret } = req.params
   const { mergeUrl } = req.body
   const mergeSecret = mergeUrl.split('/user/')[1]
+
+  // Checks for invalid url and prevents merging into itself
   if (mergeSecret === undefined || secret === mergeSecret) {
     return res.status(400).send('Bad url')
   }
 
+  // Checks for existing account
   const userIds = await UserService.getUserIdsFromSecrets([mergeSecret, secret])
-  if (userIds.mergeSecret === null) {
+  if (userIds[mergeSecret] === null || userIds[secret] === null) {
+    console.log(userIds[mergeSecret])
+    console.log(userIds[secret])
     return res.status(404).send()
   }
   UserMergeService.mergeAccounts(userIds[mergeSecret], userIds[secret])
@@ -109,6 +117,9 @@ api.put('/user/:secret', async function (req, res) {
     })
     .catch(err => {
       console.log(err)
+      if (err.message === 'accountHasBeenMerged') {
+        return res.status(409).send()
+      }
       return res.status(500).json(err)
     })
 })
