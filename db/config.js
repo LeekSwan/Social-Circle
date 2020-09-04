@@ -20,10 +20,10 @@ const dbConfig = {
     port: process.env.PG_CONTAINER_PORT
   },
   script: {
-    connectionString: process.env.PG_CONNECTION_STRING
-    // ssl: {
-    //   rejectUnauthorized: false
-    // }
+    connectionString: process.env.PG_CONNECTION_STRING,
+    ssl: {
+      rejectUnauthorized: false
+    }
   }
 }
 

@@ -8,18 +8,12 @@ class RemoveFriendButton extends React.Component {
     this.state = {
       showDelete: false
     }
-    this.handleClose = this.handleClose.bind(this)
-    this.handleShow = this.handleShow.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
   }
 
-  // Handlers for delete button
-  handleClose () { this.setState({ showDelete: false }) };
-  handleShow () { this.setState({ showDelete: true }) };
-
   handleRemove (friendId) {
     this.props.onHandleFriendRemoval(friendId)
-    axios.delete(`/api/friendships${this.props.location.pathname}`, { data: { userId: this.props.userId, friendId: friendId } })
+    axios.delete(`/api${this.props.location.pathname}/friendships/${friendId}`, { data: { userId: this.props.userId } })
       .catch(err => {
         console.log(err)
       })
@@ -29,14 +23,14 @@ class RemoveFriendButton extends React.Component {
   render () {
     return (
       <div>
-        <Button variant='danger' onClick={this.handleShow}>
+        <Button variant='danger' onClick={() => this.setState({ showDelete: true })}>
           X
         </Button>
 
-        <Modal show={this.state.showDelete} onHide={this.handleClose}>
+        <Modal show={this.state.showDelete} onHide={() => this.setState({ showDelete: false })}>
           <Modal.Body>This person will be removed from your friends list</Modal.Body>
           <Modal.Footer>
-            <Button variant='secondary' onClick={this.handleClose}>
+            <Button variant='secondary' onClick={() => this.setState({ showDelete: false })}>
               Cancel
             </Button>
             <Button variant='danger' onClick={() => this.handleRemove(this.props.friendId)}>

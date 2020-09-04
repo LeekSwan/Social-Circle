@@ -10,22 +10,20 @@ class MergeButton extends React.Component {
     this.state = {
       showMerge: false,
       mergeUrl: '',
-      alertType: ''
+      alertType: '',
+      mergeEmail: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleMerge = this.handleMerge.bind(this)
-    this.handleShowMerge = this.handleShowMerge.bind(this)
-    this.handleCloseMerge = this.handleCloseMerge.bind(this)
   }
 
-  handleShowMerge () { this.setState({ showMerge: true }) }
-  handleCloseMerge () { this.setState({ showMerge: false }) }
   handleMerge (e) {
-    axios.put(`/api${this.props.location.pathname}`, { mergeUrl: this.state.mergeUrl })
+    if (!this.state.mergeUrl) { return this.setState({ alertType: alertTable.EMPTY_FIELD }) }
+    axios.put(`/api${this.props.location.pathname}/merge`, { mergeUrl: this.state.mergeUrl })
       .then(res => {
         // TODO: Edge Case - merging an old account who has og account as a friend
         if (res.status >= 200 && res.status < 300) {
-          return this.setState({ alertType: alertTable.MERGED })
+          return this.setState({ alertType: alertTable.MERGED, mergeEmail: res.data.rows[0].email })
         }
       })
       .catch(err => {
@@ -46,10 +44,10 @@ class MergeButton extends React.Component {
   render () {
     return (
       <div>
-        <Button variant='danger' onClick={this.handleShowMerge}>
+        <Button variant='danger' onClick={() => this.setState({ showMerge: true })}>
           Merge Accounts
         </Button>
-        <Modal show={this.state.showMerge} onHide={this.handleCloseMerge}>
+        <Modal show={this.state.showMerge} onHide={() => this.setState({ showMerge: false })}>
           <Modal.Header closeButton>
             <Modal.Title>Merge Accounts</Modal.Title>
           </Modal.Header>
@@ -64,20 +62,20 @@ class MergeButton extends React.Component {
             <FormControl
               aria-label='Url'
               aria-describedby='basic-addon1'
+              placeholder='Paste your full url here'
               type='text' value={this.state.mergeUrl} onChange={this.handleChange}
             />
           </InputGroup>
           <Modal.Footer>
-            <Button variant='secondary' onClick={this.handleCloseMerge}>
+            <Button variant='secondary' onClick={() => this.setState({ showMerge: false })}>
                       Cancel
             </Button>
             <Button variant='danger' onClick={this.handleMerge}>
                       Merge
             </Button>
           </Modal.Footer>
-
-          <MergeAlert alertType={this.state.alertType} />
-
+          {this.state.alertType &&
+            <MergeAlert alertType={this.state.alertType} email={this.state.mergeEmail} />}
         </Modal>
       </div>
     )

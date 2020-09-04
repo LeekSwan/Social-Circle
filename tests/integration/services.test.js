@@ -11,7 +11,8 @@ describe.skip('UserMergeService', function () {
     // merged (child) account --> mergedUserId !== null
     // OG (parent) account --> len(SELECT * FROM users WHERE mergedUserId === thisUserId) > 0
     it('should correctly merge for two unlinked accounts', async () => {
-      const userId1 = 1; const userId2 = 2
+      const userId1 = 1
+      const userId2 = 2
 
       await insertUser({ userid: userId1, mergeduserId: null })
       await insertUser({ userid: userId2, mergeduserId: null })
@@ -27,7 +28,10 @@ describe.skip('UserMergeService', function () {
     })
 
     it('should correctly merge an OG (parent) account into another parent account', async () => {
-      const ogUser1 = 1; const mergedUser1 = 11; const ogUser2 = 2; const mergedUser2 = 22
+      const ogUser1 = 1
+      const mergedUser1 = 11
+      const ogUser2 = 2
+      const mergedUser2 = 22
       // ogUser1 is parent of mergedUser1 --> expect(mergedUser1.mergedUserId).to.equal(ogUser1.userId)
       // ogUser2 is parent of mergedUser2 --> expect(mergedUser2.mergedUserId).to.equal(ogUser2.userId)
 
@@ -46,14 +50,16 @@ describe.skip('UserMergeService', function () {
       expect(newParent.mergeduserid).to.be.null()
     })
     it('should correctly merge friends of an OG (parent) account into another parent account', async () => {
-      const ogUser1 = 1; const ogUser2 = 2; const friend1 = 11
+      const ogUser1 = 1
+      const ogUser2 = 2
+      const friend1 = 11
       // ogUser1 is being merged to ogUser2. friend1 is origionally a friend of ogUser1.
 
       await insertUser({ userid: ogUser1, mergeduserId: null })
       await insertUser({ userid: ogUser2, mergeduserId: null })
       await insertUser({ userid: friend1, mergeduserId: null })
 
-      addFriend(ogUser1, friend1)
+      await addFriend(ogUser1, friend1)
       await UserMergeService.mergeAccounts(ogUser1, ogUser2)
 
       const newParentFriendship = checkFriendshipExists(ogUser2, friend1)
@@ -62,7 +68,9 @@ describe.skip('UserMergeService', function () {
       expect(newChildFriendship).to.be.equal(false)
     })
     it('should throw when trying to merge a merged (child) account into any account', async () => {
-      const ogUserId = 1; const mergedUserId = 2; const unmergedUserId = 3
+      const ogUserId = 1
+      const mergedUserId = 2
+      const unmergedUserId = 3
       // ogUser is parent of mergedUser --> expect(mergedUser.mergedUserId).to.equal(ogUser.userId)
 
       await insertUser({ userid: ogUserId, mergeduserId: null })
@@ -80,7 +88,9 @@ describe.skip('UserMergeService', function () {
     it('should throw when trying to merge any account into a merged (child) account', async () => {
       // this should never happen btw
 
-      const ogUserId = 1; const mergedUserId = 2; const unmergedUserId = 3
+      const ogUserId = 1
+      const mergedUserId = 2
+      const unmergedUserId = 3
       // ogUser1 is parent of mergedUser1 --> expect(mergedUser1.mergedUserId).to.equal(ogUser1.userId)
 
       await insertUser({ userid: ogUserId, mergeduserId: null })

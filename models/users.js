@@ -165,8 +165,11 @@ module.exports = {
       text: 'SELECT mergeduserid FROM users WHERE id = $1',
       values: [userId]
     }
-    const res = await db.query(getMergeUserId)
-    return res.rows[0].mergeduserid
+    const result = await db.query(getMergeUserId)
+    if (result.rows.length === 0) {
+      return null
+    }
+    return result.rows[0].mergeduserid
   },
 
   mergeAccounts: async function (mergeUserId, ogUserId) {
@@ -206,10 +209,22 @@ module.exports = {
   getTrueUserSecretBySecret: async function (secret) {
     const getUserSecret = {
       text: 'SELECT u2.secret FROM users u1 ' +
-      'JOIN users u2 on u1.mergeduserid = u2.id ' +
+      'JOIN users u2 ON u1.mergeduserid = u2.id ' +
       'WHERE u1.secret= $1',
       values: [secret]
     }
     return db.query(getUserSecret)
+  },
+
+  getUserEmailBySecret: async function (secret) {
+    const getUserSecret = {
+      text: 'SELECT email FROM users WHERE secret = $1',
+      values: [secret]
+    }
+    const result = await db.query(getUserSecret)
+    if (result.rows.length === 0) {
+      return null
+    }
+    return result
   }
 }

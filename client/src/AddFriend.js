@@ -63,7 +63,7 @@ class AddFriend extends React.Component {
     }
 
     try {
-      const res = await axios.post('/api/friendships', this.state)
+      const res = await axios.post(`/api${this.props.location.pathname}/friendships`, this.state)
       this.state.friendList.push({
         friendId: res.data.rows[0].friendid,
         firstName: this.state.friendFName,

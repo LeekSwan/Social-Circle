@@ -12,7 +12,6 @@ async function checkEmailAlreadyRegistered (email) {
 async function signup (firstName, lastName, email) {
   const emailRegistered = await checkEmailAlreadyRegistered(email)
   if (emailRegistered) {
-    console.log('signup borke?')
     throw new Error('emailRegistered')
   }
   const secret = uuidv4()
@@ -97,18 +96,26 @@ async function deleteUserAndFriends (secret) {
 }
 
 async function removeFriend (userId, friendId, secret) {
-  const authentication = await UserModel.authenticateUser(userId, secret)
-  if (authentication) {
+  const isAuthenticated = await UserModel.authenticateUser(userId, secret)
+  if (isAuthenticated) {
     return UserModel.removeFriendship(userId, friendId)
   }
 }
 
 async function getUserIdsFromSecrets (secrets) {
-  const userIds = {}
-  for (let i = 0; i < secrets.length; i++) {
-    userIds[secrets[i]] = await UserModel.getUserIdBySecret(secrets[i])
-  }
-  return userIds
+  return Promise.all(Object.keys(secrets).map(key => {
+    const value = UserModel.getUserIdBySecret(secrets[key])
+    return value
+  }))
+    .then((values) => {
+      const userIds = {}
+      secrets.forEach((secret, i) => { userIds[secret] = values[i] })
+      return userIds
+    })
+}
+
+async function getUserEmailBySecret (secret) {
+  return UserModel.getUserEmailBySecret(secret)
 }
 
 async function testDB () {
@@ -127,6 +134,7 @@ module.exports = {
   deleteUserAndFriends,
   removeFriend,
   getUserIdsFromSecrets,
+  getUserEmailBySecret,
   testDB,
   authenticateUser
 }

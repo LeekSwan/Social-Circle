@@ -6,7 +6,7 @@ import { Dropdown } from 'react-bootstrap'
 class Settings extends React.Component {
   render () {
     return (
-      <div>
+      <>
         <Dropdown>
           <Dropdown.Toggle variant='success' id='dropdown-basic'>
             Settings
@@ -16,13 +16,11 @@ class Settings extends React.Component {
               <DeleteButton location={this.props.location} history={this.props.history} />
             </Dropdown.Item>
             <Dropdown.Item>
-
               <MergeButton location={this.props.location} />
-
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      </div>
+      </>
     )
   }
 }

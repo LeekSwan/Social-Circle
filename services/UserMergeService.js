@@ -1,4 +1,5 @@
 const UserModel = require('../models/users')
+const errorTable = require('../routes/constants')
 
 async function mergeAccounts (mergeUserId, ogUserId) {
   // mergeUserId = account being merged and will become child of og account
@@ -8,19 +9,21 @@ async function mergeAccounts (mergeUserId, ogUserId) {
   const mergeIsMerged = await UserModel.getMergedUserId(mergeUserId)
   const ogIsMerged = await UserModel.getMergedUserId(ogUserId)
   if (mergeIsMerged || ogIsMerged) {
-    throw new Error('accountHasBeenMerged')
+    throw new Error(errorTable.ACCOUNT_HAS_BEEN_MERGED())
   }
 
-  // Change mergeduserid field of account being merged to be ogUserId
-  // Change all mergeduserid field of child accounts that pointed to mergeUserId to point to ogUserId
-  UserModel.mergeAccounts(mergeUserId, ogUserId)
-  UserModel.mergeChildAccounts(mergeUserId, ogUserId)
+  return Promise.all([
+    // Change mergeduserid field of account being merged to be ogUserId
+    // Change all mergeduserid field of child accounts that pointed to mergeUserId to point to ogUserId
+    UserModel.mergeAccounts(mergeUserId, ogUserId),
+    UserModel.mergeChildAccounts(mergeUserId, ogUserId),
 
-  // Change all friendships that points to mergeUserId to ogUserId
-  UserModel.mergeFriends(mergeUserId, ogUserId)
+    // Change all friendships that points to mergeUserId to ogUserId
+    UserModel.mergeFriends(mergeUserId, ogUserId),
 
-  // Remove duplicate friendships after merge
-  UserModel.removeDuplicateFriends(ogUserId)
+    // Remove duplicate friendships after merge
+    UserModel.removeDuplicateFriends(ogUserId)
+  ])
 }
 
 module.exports = {
