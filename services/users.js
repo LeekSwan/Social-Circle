@@ -103,10 +103,7 @@ async function removeFriend (userId, friendId, secret) {
 }
 
 async function getUserIdsFromSecrets (secrets) {
-  return Promise.all(Object.keys(secrets).map(key => {
-    const value = UserModel.getUserIdBySecret(secrets[key])
-    return value
-  }))
+  return Promise.all(Object.keys(secrets).map(key => UserModel.getUserIdBySecret(secrets[key])))
     .then((values) => {
       const userIds = {}
       secrets.forEach((secret, i) => { userIds[secret] = values[i] })

@@ -38,19 +38,9 @@ function addFriend (user1, user2) {
   return db.query(addFriendship)
 }
 
-async function checkFriendshipExists (user1, user2) {
-  const checkFriendship = {
-    text: 'SELECT * FROM friendships where user1 = $1 AND user2 = $2',
-    values: [user1, user2]
-  }
-  const result = await db.query(checkFriendship)
-  return (result.rows.length !== 0)
-}
-
 module.exports = {
   deleteAllUsers,
   insertUser,
   getUser,
-  addFriend,
-  checkFriendshipExists
+  addFriend
 }

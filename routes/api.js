@@ -73,7 +73,7 @@ api.post('/user/:secret/friendships', async function (req, res) {
 })
 
 // Route for deleting user accounts and friendships
-api.delete('/user/:secret/delete', function (req, res) {
+api.delete('/user/:secret', function (req, res) {
   const { secret } = req.params
   UserService.deleteUserAndFriends(secret)
     .then(() => {
@@ -104,18 +104,15 @@ api.put('/user/:secret/merge', async function (req, res) {
     return res.status(400).send('Bad url')
   }
 
-  // Checks for existing account
-  const userIds = await UserService.getUserIdsFromSecrets([mergeSecret, secret])
   const mergeEmail = await UserService.getUserEmailBySecret(mergeSecret)
-  if (userIds[mergeSecret] === null || userIds[secret] === null || Object.keys(userIds).length !== 2) {
-    return res.status(404).send()
-  }
-  UserMergeService.mergeAccounts(userIds[mergeSecret], userIds[secret])
+  UserMergeService.mergeAccounts(mergeSecret, secret)
     .then(() => {
       res.status(200).send(mergeEmail)
     })
     .catch(err => {
-      if (err.message === errorTable.ACCOUNT_HAS_BEEN_MERGED()) {
+      if (err.message === errorTable.NONEXISTENT_USER) {
+        return res.status(404).send()
+      } else if (err.message === errorTable.ACCOUNT_HAS_BEEN_MERGED) {
         return res.status(409).send()
       }
       return res.status(500).json(err)

@@ -35,7 +35,7 @@ function displayAlert (alertType, email) {
     case alertTable.NONEXISTENT_ACCOUNT:
       return (
         <Alert variant='danger'>
-        This account wasn't found. Please double check that you included the entire URL or that the account hasn't been deleted.
+        This account was not found. Please double check that you have included the entire URL or that the account has not been deleted.
         </Alert>
       )
     case alertTable.ALREADY_MERGED:
