@@ -67,6 +67,16 @@ module.exports = {
     }
   },
 
+  getUserById: async function (userId) {
+    const getUser = {
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [userId]
+
+    }
+    const user = await db.query(getUser)
+    return user.rows[0]
+  },
+
   // Get user id from email
   getUserIdByEmail: async function (email) {
     const getUserId = {
@@ -227,4 +237,5 @@ module.exports = {
     }
     return result
   }
+
 }

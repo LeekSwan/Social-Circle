@@ -1,8 +1,9 @@
 const { UserMergeService } = require('../../services/UserMergeService')
 const UserService = require('../../services/users')
+const UserModel = require('../../models/users')
 
 const { expect } = require('chai')
-const { deleteAllUsers, insertUser, getUser, addFriend } = require('./utils')
+const { deleteAllUsers, insertUser } = require('./utils')
 
 describe.skip('UserMergeService', function () {
   describe('.mergeAcounts(...)', function () {
@@ -20,8 +21,8 @@ describe.skip('UserMergeService', function () {
 
       await UserMergeService.mergeAccounts(userId1, userId2)
 
-      const user1 = getUser(userId1)
-      const user2 = getUser(userId2)
+      const user1 = UserModel.getUserById(userId1)
+      const user2 = UserModel.getUserById(userId2)
 
       // expect user1 to be merged
       expect(user1.mergeduserid).to.equal(user2.userid)
@@ -44,10 +45,11 @@ describe.skip('UserMergeService', function () {
 
       await UserMergeService.mergeAccounts(ogUser1, ogUser2)
 
-      const newParent = getUser(ogUser2)
-      const newChild1 = getUser(ogUser1)
-      const newChild2 = getUser(mergedUser1)
-      const newChild3 = getUser(mergedUser2)
+      const newParent = UserModel.getUserById(ogUser2)
+      const newChild1 = UserModel.getUserById(ogUser1)
+      const newChild2 = UserModel.getUserById(mergedUser1)
+      const newChild3 = UserModel.getUserById(mergedUser2)
+      expect(newParent.userId).to.equal(ogUser2)
       expect(newChild1.mergeduserid).to.equal(newParent.userid)
       expect(newChild2.mergeduserid).to.equal(newParent.userid)
       expect(newChild3.mergeduserid).to.equal(newParent.userid)
@@ -63,7 +65,7 @@ describe.skip('UserMergeService', function () {
       await insertUser({ userid: ogUser2, mergeduserId: null })
       await insertUser({ userid: friend1, mergeduserId: null })
 
-      await addFriend(ogUser1, friend1)
+      await UserModel.addFriend(ogUser1, friend1)
       await UserMergeService.mergeAccounts(ogUser1, ogUser2)
 
       const newParentFriendship = UserService.login(ogUser2)

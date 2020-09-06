@@ -18,18 +18,17 @@ async function mergeAccounts (mergeSecret, secret) {
     throw new Error(errorTable.ACCOUNT_HAS_BEEN_MERGED)
   }
 
-  return Promise.all([
+  await Promise.all([
     // Change mergeduserid field of account being merged to be ogUserId
     // Change all mergeduserid field of child accounts that pointed to mergeUserId to point to ogUserId
     UserModel.mergeAccounts(userIds[mergeSecret], userIds[secret]),
     UserModel.mergeChildAccounts(userIds[mergeSecret], userIds[secret]),
 
     // Change all friendships that points to mergeUserId to ogUserId
-    UserModel.mergeFriends(userIds[mergeSecret], userIds[secret]),
-
-    // Remove duplicate friendships after merge
-    UserModel.removeDuplicateFriends(userIds[secret])
+    UserModel.mergeFriends(userIds[mergeSecret], userIds[secret])
   ])
+  // Remove duplicate friendships after merge
+  return UserModel.removeDuplicateFriends(userIds[secret])
 }
 
 module.exports = {

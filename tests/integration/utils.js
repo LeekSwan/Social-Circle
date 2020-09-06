@@ -20,27 +20,7 @@ function insertUser (values) {
   return db.query(insertUser)
 }
 
-async function getUser (userId) {
-  const getUser = {
-    text: 'SELECT * FROM users WHERE id = $1',
-    values: [userId]
-
-  }
-  const user = await db.query(getUser)
-  return user.rows[0]
-}
-
-function addFriend (user1, user2) {
-  const addFriendship = {
-    text: 'INSERT INTO friendships(user1, user2) VALUES ($1, $2)',
-    values: [user1, user2]
-  }
-  return db.query(addFriendship)
-}
-
 module.exports = {
   deleteAllUsers,
-  insertUser,
-  getUser,
-  addFriend
+  insertUser
 }
