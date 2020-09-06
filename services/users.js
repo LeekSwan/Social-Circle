@@ -96,10 +96,23 @@ async function deleteUserAndFriends (secret) {
 }
 
 async function removeFriend (userId, friendId, secret) {
-  const authentication = await authenticateUser(userId, secret)
-  if (authentication) {
+  const isAuthenticated = await UserModel.authenticateUser(userId, secret)
+  if (isAuthenticated) {
     return UserModel.removeFriendship(userId, friendId)
   }
+}
+
+async function getUserIdsFromSecrets (secrets) {
+  return Promise.all(Object.keys(secrets).map(key => UserModel.getUserIdBySecret(secrets[key])))
+    .then((values) => {
+      const userIds = {}
+      secrets.forEach((secret, i) => { userIds[secret] = values[i] })
+      return userIds
+    })
+}
+
+async function getUserEmailBySecret (secret) {
+  return UserModel.getUserEmailBySecret(secret)
 }
 
 async function testDB () {
@@ -117,7 +130,8 @@ module.exports = {
   getSocialCircle,
   deleteUserAndFriends,
   removeFriend,
+  getUserIdsFromSecrets,
+  getUserEmailBySecret,
   testDB,
   authenticateUser
-
 }

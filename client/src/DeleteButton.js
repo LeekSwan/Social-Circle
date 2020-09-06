@@ -8,40 +8,35 @@ class DeleteButton extends React.Component {
     this.state = {
       showDelete: false
     }
-    this.handleClose = this.handleClose.bind(this)
-    this.handleShow = this.handleShow.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
   }
 
-  // Handlers for delete button
-  handleClose () { this.setState({ showDelete: false }) };
-  handleShow () { this.setState({ showDelete: true }) };
   handleDelete (e) {
-    axios.delete(`/api${this.props.location.pathname}`)
+    axios.delete(`/api${this.props.location.pathname}/delete`)
       .then(res => {
-        console.log('got to delete.then')
-        this.props.history.push({ pathname: '/' })
+        if (res.status === 200) {
+          this.props.history.push({ pathname: '/' })
+        }
       })
   }
 
   render () {
     return (
       <div>
-        <Button variant='danger' onClick={this.handleShow}>
+        <Button variant='danger' onClick={() => this.setState({ showDelete: true })}>
           Delete Account
         </Button>
-
-        <Modal show={this.state.showDelete} onHide={this.handleClose}>
+        <Modal show={this.state.showDelete} onHide={() => this.setState({ showDelete: false })}>
           <Modal.Header closeButton>
             <Modal.Title>Are you sure?</Modal.Title>
           </Modal.Header>
           <Modal.Body>Deleting account will delete user and friendships</Modal.Body>
           <Modal.Footer>
-            <Button variant='secondary' onClick={this.handleClose}>
-              Cancel
+            <Button variant='secondary' onClick={() => this.setState({ showDelete: false })}>
+                      Cancel
             </Button>
             <Button variant='danger' onClick={this.handleDelete}>
-              Delete
+                      Delete
             </Button>
           </Modal.Footer>
         </Modal>

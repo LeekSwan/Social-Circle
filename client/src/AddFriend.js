@@ -4,7 +4,7 @@ import { Button, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CountDisplay from './CountDisplay'
-import DeleteButton from './DeleteButton'
+import Settings from './Settings'
 import RemoveFriendButton from './RemoveFriendButton'
 import FormAlert from './FormAlert'
 import { alertTable } from './constants'
@@ -44,6 +44,8 @@ class AddFriend extends React.Component {
       }).catch(err => {
         if (err.response.status === 404) {
           this.props.history.push({ pathname: '/404' })
+        } else if (err.response.status === 500) {
+          this.props.history.push({ pathname: '/500' })
         }
         console.log(err)
       })
@@ -61,7 +63,7 @@ class AddFriend extends React.Component {
     }
 
     try {
-      const res = await axios.post('/api/friendships', this.state)
+      const res = await axios.post(`/api${this.props.location.pathname}/friendships`, this.state)
       this.state.friendList.push({
         friendId: res.data.rows[0].friendid,
         firstName: this.state.friendFName,
@@ -169,7 +171,7 @@ class AddFriend extends React.Component {
 
         <CountDisplay location={this.props.location} />
 
-        <DeleteButton location={this.props.location} history={this.props.history} />
+        <Settings location={this.props.location} history={this.props.history} />
 
       </div>
     )

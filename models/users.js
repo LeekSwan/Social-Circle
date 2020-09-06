@@ -67,14 +67,26 @@ module.exports = {
     }
   },
 
+  getUserById: async function (userId) {
+    const getUser = {
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [userId]
+
+    }
+    const user = await db.query(getUser)
+    return user.rows[0]
+  },
+
   // Get user id from email
   getUserIdByEmail: async function (email) {
     const getUserId = {
       text: 'SELECT id FROM users WHERE users.email = $1',
       values: [email]
     }
-    // TODO: Return null if doesn't exist
     const result = await db.query(getUserId)
+    if (result.rows.length === 0) {
+      return null
+    }
     return result.rows[0].id
   },
 
@@ -83,8 +95,10 @@ module.exports = {
       text: 'SELECT id FROM users WHERE users.secret = $1',
       values: [secret]
     }
-    // TODO: Return null if doesn't exist
     const result = await db.query(getUserId)
+    if (result.rows.length === 0) {
+      return null
+    }
     return result.rows[0].id
   },
 
@@ -154,5 +168,74 @@ module.exports = {
     }
     const res = await db.query(auth)
     return (res.rows.length !== 0)
+  },
+
+  getMergedUserId: async function (userId) {
+    const getMergeUserId = {
+      text: 'SELECT mergeduserid FROM users WHERE id = $1',
+      values: [userId]
+    }
+    const result = await db.query(getMergeUserId)
+    if (result.rows.length === 0) {
+      return null
+    }
+    return result.rows[0].mergeduserid
+  },
+
+  mergeAccounts: async function (mergeUserId, ogUserId) {
+    const merge = {
+      text: 'UPDATE users SET mergeduserid = $2 WHERE id = $1',
+      values: [mergeUserId, ogUserId]
+    }
+    return db.query(merge)
+  },
+
+  mergeChildAccounts: async function (mergeUserId, ogUserId) {
+    const merge = {
+      text: 'UPDATE users SET mergeduserid = $2 WHERE mergeduserid = $1',
+      values: [mergeUserId, ogUserId]
+    }
+    return db.query(merge)
+  },
+
+  mergeFriends: async function (mergeUserId, ogUserId) {
+    const merge = {
+      text: 'UPDATE friendships SET user1 = $2 WHERE user1 = $1',
+      values: [mergeUserId, ogUserId]
+    }
+    return db.query(merge)
+  },
+
+  removeDuplicateFriends: async function (userId) {
+    const removeDup = {
+      text: 'DELETE FROM friendships a WHERE a.ctid <> ' +
+      '(SELECT min(b.ctid) FROM friendships b WHERE  a.user2 = b.user2 AND a.user1 = $1 AND b.user1 = $1)',
+      values: [userId]
+    }
+    return db.query(removeDup)
+  },
+
+  // Checks if account has been merged and if so, returns secret of og account.
+  getTrueUserSecretBySecret: async function (secret) {
+    const getUserSecret = {
+      text: 'SELECT u2.secret FROM users u1 ' +
+      'JOIN users u2 ON u1.mergeduserid = u2.id ' +
+      'WHERE u1.secret= $1',
+      values: [secret]
+    }
+    return db.query(getUserSecret)
+  },
+
+  getUserEmailBySecret: async function (secret) {
+    const getUserSecret = {
+      text: 'SELECT email FROM users WHERE secret = $1',
+      values: [secret]
+    }
+    const result = await db.query(getUserSecret)
+    if (result.rows.length === 0) {
+      return null
+    }
+    return result
   }
+
 }

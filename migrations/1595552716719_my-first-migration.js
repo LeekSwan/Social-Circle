@@ -9,13 +9,13 @@ exports.up = (pgm) => {
     lastname: { type: 'text' },
     email: { type: 'text' },
     secret: { type: 'text' },
-    deletedAt: { type: 'timestamptz' },
-    createdAt: {
+    deletedat: { type: 'timestamptz' },
+    createdat: {
       type: 'timestamptz',
       notNull: true,
       default: pgm.func('current_timestamp')
     },
-    mergedUserId: {
+    mergeduserid: {
       type: 'integer',
       references: '"users"'
     }
@@ -34,7 +34,7 @@ exports.up = (pgm) => {
       references: '"users"',
       onDelete: 'cascade'
     },
-    createdAt: {
+    createdat: {
       type: 'timestamptz',
       notNull: true,
       default: pgm.func('current_timestamp')
