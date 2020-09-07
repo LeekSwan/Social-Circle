@@ -217,13 +217,21 @@ module.exports = {
 
   // Checks if account has been merged and if so, returns secret of og account.
   getTrueUserSecretBySecret: async function (secret) {
+    const userExists = await this.getUserIdBySecret(secret)
+    if (!userExists) {
+      return null
+    }
     const getUserSecret = {
       text: 'SELECT u2.secret FROM users u1 ' +
       'JOIN users u2 ON u1.mergeduserid = u2.id ' +
       'WHERE u1.secret= $1',
       values: [secret]
     }
-    return db.query(getUserSecret)
+    const userSecret = await db.query(getUserSecret)
+    if (userSecret.rows.length === 0) {
+      return secret
+    }
+    return userSecret.rows[0].secret
   },
 
   getUserEmailBySecret: async function (secret) {
@@ -235,7 +243,7 @@ module.exports = {
     if (result.rows.length === 0) {
       return null
     }
-    return result
+    return result.rows[0].email
   }
 
 }

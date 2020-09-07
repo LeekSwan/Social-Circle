@@ -21,11 +21,11 @@ async function signup (firstName, lastName, email) {
 }
 
 async function login (secret) {
-  const userData = await UserModel.getUserBySecret(secret)
-  if (userData == null) {
+  const trueUserSecret = await UserModel.getTrueUserSecretBySecret(secret)
+  if (trueUserSecret == null) {
     throw new Error('invalidSecret')
   }
-  return userData
+  return UserModel.getUserBySecret(trueUserSecret)
 }
 
 // TODO: refactor this so it makes more sense
