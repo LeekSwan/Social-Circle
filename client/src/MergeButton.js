@@ -23,7 +23,7 @@ class MergeButton extends React.Component {
       .then(res => {
         // TODO: Edge Case - merging an old account who has og account as a friend
         if (res.status >= 200 && res.status < 300) {
-          return this.setState({ alertType: alertTable.MERGED, mergeEmail: res.data.rows[0].email })
+          return this.setState({ alertType: alertTable.MERGED, mergeEmail: res.data })
         }
       })
       .catch(err => {
