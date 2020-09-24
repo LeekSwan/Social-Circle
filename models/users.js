@@ -224,7 +224,7 @@ module.exports = {
     const getUserSecret = {
       text: 'SELECT u2.secret FROM users u1 ' +
       'JOIN users u2 ON u1.mergeduserid = u2.id ' +
-      'WHERE u1.secret= $1',
+      'WHERE u1.secret = $1',
       values: [secret]
     }
     const userSecret = await db.query(getUserSecret)
@@ -232,6 +232,24 @@ module.exports = {
       return secret
     }
     return userSecret.rows[0].secret
+  },
+
+  getTrueUserEmailByEmail: async function (email) {
+    const userExists = await this.getUserIdByEmail(email)
+    if (!userExists) {
+      return null
+    }
+    const getUserEmail = {
+      text: 'SELECT u2.email FROM users u1 ' +
+      'JOIN users u2 ON u1.mergeduserid = u2.id ' +
+      'WHERE u1.email = $1',
+      values: [email]
+    }
+    const userEmail = await db.query(getUserEmail)
+    if (userEmail.rows.length === 0) {
+      return email
+    }
+    return userEmail.rows[0].email
   },
 
   getUserEmailBySecret: async function (secret) {

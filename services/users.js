@@ -30,11 +30,14 @@ async function login (secret) {
 
 // TODO: refactor this so it makes more sense
 async function addFriend (userId, firstName, lastName, friendFName, friendLName, friendEmail) {
+  // If merged account, get trueFriendEmail of from friend email. Otherwise, getTrueUserEmailByEmail returns friendEmail
+  const trueFriendEmail = await UserModel.getTrueUserEmailByEmail(friendEmail)
+
   // Get userId of friend
   let friendId
-  const userExists = await checkEmailAlreadyRegistered(friendEmail)
+  const userExists = await checkEmailAlreadyRegistered(trueFriendEmail)
   if (userExists) {
-    friendId = await UserModel.getUserIdByEmail(friendEmail)
+    friendId = await UserModel.getUserIdByEmail(trueFriendEmail)
   } else {
     const secret = uuidv4()
     friendId = await UserModel.create(friendFName, friendLName, friendEmail, secret)
@@ -44,7 +47,7 @@ async function addFriend (userId, firstName, lastName, friendFName, friendLName,
 
   // Add friend
   if (userExists) {
-    const friendshipExists = await UserModel.checkFriendshipExists(userId, friendEmail)
+    const friendshipExists = await UserModel.checkFriendshipExists(userId, trueFriendEmail)
     if (friendshipExists) {
       throw new Error('friendshipExists')
     }
