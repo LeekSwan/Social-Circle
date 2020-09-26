@@ -1,6 +1,6 @@
 import React from 'react'
 import { Alert } from 'react-bootstrap'
-import { alertTable } from './constants'
+import { alertTable } from '../constants'
 
 class Alerts extends React.Component {
   render () {

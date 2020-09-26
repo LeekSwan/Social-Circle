@@ -1,9 +1,9 @@
 import React from 'react'
 import './App.css'
-import Login from './Login'
-import UserNotFound from './UserNotFound'
-import ServerError from './ServerError'
-import AddFriend from './AddFriend'
+import Login from './Login/Login'
+import UserNotFound from './ErrorHandling/UserNotFound'
+import ServerError from './ErrorHandling/ServerError'
+import AddFriend from './AddFriend/AddFriend'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 class App extends React.Component {

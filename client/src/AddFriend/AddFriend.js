@@ -7,7 +7,7 @@ import CountDisplay from './CountDisplay'
 import Settings from './Settings'
 import RemoveFriendButton from './RemoveFriendButton'
 import FormAlert from './FormAlert'
-import { alertTable } from './constants'
+import { alertTable } from '../constants'
 
 class AddFriend extends React.Component {
   constructor (props) {
