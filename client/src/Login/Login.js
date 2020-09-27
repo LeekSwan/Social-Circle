@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 
 import SignupAlert from './SignupAlert'
-import { alertTable } from './constants'
+import { alertTable } from '../constants'
 
 class Login extends React.Component {
   constructor (props) {

@@ -12,7 +12,7 @@ class DeleteButton extends React.Component {
   }
 
   handleDelete (e) {
-    axios.delete(`/api${this.props.location.pathname}/delete`)
+    axios.delete(`/api${this.props.location.pathname}`)
       .then(res => {
         if (res.status === 200) {
           this.props.history.push({ pathname: '/' })

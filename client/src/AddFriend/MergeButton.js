@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import MergeAlert from './MergeAlerts'
-import { alertTable } from './constants'
+import { alertTable } from '../constants'
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 
 class MergeButton extends React.Component {
