@@ -76,7 +76,7 @@ class AddFriend extends React.Component {
       this.resetForm(e)
     } catch (err) {
       console.log(err)
-      if (err.status === 409) {
+      if (err.response.status === 409) {
         this.setState({ alertType: alertTable.FRIEND_EXISTS })
       }
     }

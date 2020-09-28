@@ -17,7 +17,7 @@ class RemoveFriendButton extends React.Component {
       .catch(err => {
         console.log(err)
       })
-    this.handleClose()
+    this.setState({ showDelete: false })
   }
 
   render () {
